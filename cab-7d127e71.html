@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOA Cabinet OS — Dealer Settlement Engine Demo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif; }
+  .breathe { animation: breathe 2.4s ease-in-out infinite; }
+  @keyframes breathe { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+  .tab-active { background: #1f2937; color: white; }
+  .tab-inactive { background: #f3f4f6; color: #374151; }
+  .tier-1 { background: linear-gradient(135deg, #1e3a8a, #3730a3); color: white; }
+  .tier-2 { background: linear-gradient(135deg, #047857, #065f46); color: white; }
+  .tier-3 { background: linear-gradient(135deg, #b45309, #92400e); color: white; }
+  .scroll-fade { mask-image: linear-gradient(180deg, black 85%, transparent); }
+  .glow { box-shadow: 0 0 20px rgba(59,130,246,0.35); }
+  .pulse-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.4);opacity:0.5;} }
+  details > summary { cursor: pointer; }
+  .lang-zh { display: none; }
+  body.zh .lang-en { display: none; }
+  body.zh .lang-zh { display: inline; }
+  .live-feed { font-family: 'SF Mono', Monaco, monospace; font-size: 11px; }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<!-- ============ HEADER ============ -->
+<header class="bg-slate-900 text-white px-6 py-4 sticky top-0 z-50 shadow-lg">
+  <div class="flex items-center justify-between flex-wrap gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold">CO</div>
+      <div>
+        <div class="font-bold text-lg">FOA Cabinet OS</div>
+        <div class="text-xs text-slate-400">
+          <span class="lang-en">Dealer Settlement Engine · Demo v1.0</span>
+          <span class="lang-zh">Dealer 结算引擎 · Demo v1.0</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-4 text-sm">
+      <div class="text-xs text-slate-400">
+        <span class="lang-en">Built for Kitty · 2026-05-27</span>
+        <span class="lang-zh">为 Kitty 定制 · 2026-05-27</span>
+      </div>
+      <button onclick="document.body.classList.toggle('zh')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs">
+        EN / 中
+      </button>
+    </div>
+  </div>
+  <!-- Tab Nav -->
+  <nav class="flex gap-2 mt-4 overflow-x-auto pb-1">
+    <button onclick="showTab('overview')" class="tab-btn tab-active px-4 py-2 rounded-t text-sm whitespace-nowrap">📊 Overview</button>
+    <button onclick="showTab('hierarchy')" class="tab-btn tab-inactive px-4 py-2 rounded-t text-sm whitespace-nowrap">🌳 Dealer Hierarchy</button>
+    <button onclick="showTab('quote')" class="tab-btn tab-inactive px-4 py-2 rounded-t text-sm whitespace-nowrap">💰 Quote Engine</button>
+    <button onclick="showTab('settlement')" class="tab-btn tab-inactive px-4 py-2 rounded-t text-sm whitespace-nowrap">🧾 Settlement</button>
+    <button onclick="showTab('referral')" class="tab-btn tab-inactive px-4 py-2 rounded-t text-sm whitespace-nowrap">🔗 Referral Engine</button>
+    <button onclick="showTab('portal')" class="tab-btn tab-inactive px-4 py-2 rounded-t text-sm whitespace-nowrap">🏬 Dealer Portal</button>
+    <button onclick="showTab('lossreason')" class="tab-btn tab-inactive px-4 py-2 rounded-t text-sm whitespace-nowrap">📉 Loss Reasons</button>
+    <button onclick="showTab('boundary')" class="tab-btn tab-inactive px-4 py-2 rounded-t text-sm whitespace-nowrap">🔐 Data Boundary</button>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-6">
+
+<!-- ============ OVERVIEW ============ -->
+<section id="tab-overview" class="tab-panel">
+  <div class="mb-6 bg-white rounded-xl p-6 shadow-sm border-l-4 border-blue-600">
+    <h2 class="text-2xl font-bold text-slate-900 mb-2">
+      <span class="lang-en">Dealer Settlement Overview · May 2026</span>
+      <span class="lang-zh">经销商结算总览 · 2026 年 5 月</span>
+    </h2>
+    <p class="text-sm text-slate-500 italic">
+      <span class="lang-en">"We need a tool — a settlement tool" — Kitty, 2026-05-26</span>
+      <span class="lang-zh">「我们现在做取道商需要一个工具，就是结算工具」— Kitty 原话，2026-05-26</span>
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-xs text-slate-500 uppercase">Active Dealers</div>
+      <div class="text-3xl font-bold text-slate-900 mt-1 breathe">24</div>
+      <div class="text-xs text-emerald-600 mt-1">↗ +3 vs last month</div>
+    </div>
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-xs text-slate-500 uppercase">Monthly GMV</div>
+      <div class="text-3xl font-bold text-slate-900 mt-1 breathe">$487K</div>
+      <div class="text-xs text-emerald-600 mt-1">↗ +12% MoM</div>
+    </div>
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-xs text-slate-500 uppercase">Referral Pool</div>
+      <div class="text-3xl font-bold text-slate-900 mt-1 breathe">$18,720</div>
+      <div class="text-xs text-slate-500 mt-1">To 11 dealers · Auto-paid Jun 5</div>
+    </div>
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-xs text-slate-500 uppercase">Open Disputes</div>
+      <div class="text-3xl font-bold text-amber-600 mt-1 breathe">2</div>
+      <div class="text-xs text-amber-600 mt-1">⚠ Within 14-day window</div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold text-slate-700 mb-3">Tier Distribution · GMV%</div>
+      <div class="space-y-3">
+        <div>
+          <div class="flex justify-between text-xs mb-1"><span>T1 Strategic (3 dealers)</span><span class="font-mono">52%</span></div>
+          <div class="h-2 bg-slate-100 rounded-full"><div class="h-2 rounded-full tier-1" style="width:52%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs mb-1"><span>T2 Design Center / Builder (8)</span><span class="font-mono">33%</span></div>
+          <div class="h-2 bg-slate-100 rounded-full"><div class="h-2 rounded-full tier-2" style="width:33%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs mb-1"><span>T3 Community (13)</span><span class="font-mono">15%</span></div>
+          <div class="h-2 bg-slate-100 rounded-full"><div class="h-2 rounded-full tier-3" style="width:15%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold text-slate-700 mb-3">6-Warehouse Fulfillment</div>
+      <div class="text-xs space-y-2 font-mono">
+        <div class="flex justify-between"><span>TX-Dallas</span><span class="text-emerald-600">93% · 142 orders</span></div>
+        <div class="flex justify-between"><span>CA-Ontario</span><span class="text-emerald-600">98% · 119 orders</span></div>
+        <div class="flex justify-between"><span>NJ-Newark</span><span class="text-emerald-600">91% · 87 orders</span></div>
+        <div class="flex justify-between"><span>IL-Joliet</span><span class="text-amber-600">82% · 54 orders</span></div>
+        <div class="flex justify-between"><span>GA-Atlanta</span><span class="text-emerald-600">95% · 71 orders</span></div>
+        <div class="flex justify-between"><span>FL-Miami</span><span class="text-emerald-600">89% · 38 orders</span></div>
+        <div class="border-t pt-2 mt-2 flex justify-between font-bold"><span>Network avg</span><span>91.5%</span></div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold text-slate-700 mb-3">Live Activity Feed <span class="pulse-dot"></span></div>
+      <div class="live-feed space-y-1.5 text-slate-600 scroll-fade max-h-44 overflow-hidden">
+        <div>[10:14] T2 Design Center C → Quote Q-2871 ($12,840)</div>
+        <div>[10:09] T1 Strategic A → Order O-4521 confirmed</div>
+        <div>[10:01] Referral payout: T2 → T3 PM C1, $327.60</div>
+        <div>[09:58] WH-Dallas restock: BC-30 series, +84 units</div>
+        <div>[09:51] T3 Agent E → Quote Q-2870 expired (loss reason logged)</div>
+        <div>[09:48] T1 Strategic B → Invoice IN-2024 paid $34,200</div>
+        <div>[09:42] T2 Builder D → Order O-4520 in transit · EDD Jun 3</div>
+        <div>[09:35] Dispute opened by T3 PM E1 on IN-2018</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg p-5 shadow-sm">
+    <div class="text-sm font-semibold text-slate-700 mb-3">Phase 1 → Phase 2 Roadmap</div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+      <div class="border-l-4 border-blue-600 pl-3">
+        <div class="font-bold">Phase 1 · Demo (Week 1-4)</div>
+        <div class="text-slate-500 mt-1">Prototype + business rules + interface spec. $6-10K folded into SOW.</div>
+      </div>
+      <div class="border-l-4 border-emerald-600 pl-3">
+        <div class="font-bold">Phase 2 · Pilot (Week 5-12)</div>
+        <div class="text-slate-500 mt-1">6 pilot dealers on portal, settlement closed-loop. $25-40K setup + $3-5K/mo.</div>
+      </div>
+      <div class="border-l-4 border-amber-600 pl-3">
+        <div class="font-bold">Phase 2.5 · Scale (M4-6)</div>
+        <div class="text-slate-500 mt-1">Expand to 18 dealers. Referral engine fully on. Loss-reason data accruing.</div>
+      </div>
+      <div class="border-l-4 border-purple-600 pl-3">
+        <div class="font-bold">Phase 3 · Productize (M7+)</div>
+        <div class="text-slate-500 mt-1">SaaS license to other cabinet wholesalers, or ZK 10-25% JV equity path.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HIERARCHY ============ -->
+<section id="tab-hierarchy" class="tab-panel hidden">
+  <div class="mb-4 bg-white rounded-xl p-6 shadow-sm">
+    <h2 class="text-2xl font-bold text-slate-900 mb-2">
+      <span class="lang-en">Dealer Hierarchy · 3 Tiers + Sub-Tier Referrals</span>
+      <span class="lang-zh">经销商层级 · 三层 + Sub-Tier 推荐结构</span>
+    </h2>
+    <p class="text-sm text-slate-500 italic">
+      <span class="lang-en">"First tier / second tier / third tier... and under each, a sub-layer for referrals" — Kitty, original transcript</span>
+      <span class="lang-zh">「first tier / second tier / third tier...每一层下面又给他变成一个 sub 的一层」— Kitty 原话</span>
+    </p>
+  </div>
+
+  <!-- Hierarchy Tree -->
+  <div class="bg-white rounded-xl p-6 shadow-sm">
+    <!-- T1 -->
+    <div class="mb-6">
+      <div class="text-sm font-bold text-slate-700 mb-3">🔵 T1 · Strategic Dealers · Factory price × 0.55</div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="tier-1 rounded-lg p-4">
+          <div class="text-xs opacity-75">T1-001 · TX</div>
+          <div class="font-bold text-lg">Strategic Dealer A</div>
+          <div class="text-xs mt-2 opacity-90">YTD: $1.2M · Discount Tier T1-A · Joined 2022</div>
+          <details class="mt-3 text-xs">
+            <summary class="opacity-90">▾ 2 Sub-Tier Referrals · $5,400/mo pool</summary>
+            <div class="mt-2 ml-3 space-y-1 opacity-90">
+              <div>→ T2 Design Center A1 · 5% · 8 mo remaining</div>
+              <div>→ T2 Builder A2 · 5% · 11 mo remaining</div>
+            </div>
+          </details>
+        </div>
+        <div class="tier-1 rounded-lg p-4">
+          <div class="text-xs opacity-75">T1-002 · CA</div>
+          <div class="font-bold text-lg">Strategic Dealer B</div>
+          <div class="text-xs mt-2 opacity-90">YTD: $980K · Discount Tier T1-A · Joined 2021</div>
+          <details class="mt-3 text-xs">
+            <summary class="opacity-90">▾ 1 Sub-Tier Referral · $1,840/mo pool</summary>
+            <div class="mt-2 ml-3 space-y-1 opacity-90">
+              <div>→ T2 Design Center B1 · 5% · 3 mo remaining</div>
+            </div>
+          </details>
+        </div>
+        <div class="tier-1 rounded-lg p-4">
+          <div class="text-xs opacity-75">T1-003 · NJ</div>
+          <div class="font-bold text-lg">Strategic Dealer C</div>
+          <div class="text-xs mt-2 opacity-90">YTD: $720K · Discount Tier T1-B · Joined 2023</div>
+          <details class="mt-3 text-xs">
+            <summary class="opacity-90">▾ 0 Sub-Tier Referrals</summary>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- T2 -->
+    <div class="mb-6">
+      <div class="text-sm font-bold text-slate-700 mb-3">🟢 T2 · Design Center / Builder · Factory price × 0.65</div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div class="tier-2 rounded-lg p-3 text-sm">
+          <div class="text-xs opacity-75">T2-001 · Referred by T1-001</div>
+          <div class="font-bold">Design Center A1</div>
+          <div class="text-xs mt-1 opacity-90">YTD: $480K · Tier T2-A</div>
+        </div>
+        <div class="tier-2 rounded-lg p-3 text-sm">
+          <div class="text-xs opacity-75">T2-002 · Referred by T1-001</div>
+          <div class="font-bold">Builder A2</div>
+          <div class="text-xs mt-1 opacity-90">YTD: $310K · Tier T2-B</div>
+        </div>
+        <div class="tier-2 rounded-lg p-3 text-sm">
+          <div class="text-xs opacity-75">T2-003 · Referred by T1-002</div>
+          <div class="font-bold">Design Center B1</div>
+          <div class="text-xs mt-1 opacity-90">YTD: $290K · Tier T2-B</div>
+        </div>
+        <div class="tier-2 rounded-lg p-3 text-sm">
+          <div class="text-xs opacity-75">T2-004 · Direct</div>
+          <div class="font-bold">Design Center D</div>
+          <div class="text-xs mt-1 opacity-90">YTD: $220K · Tier T2-A</div>
+          <details class="mt-2 text-xs"><summary class="opacity-90">▾ 2 sub-refs (3%)</summary></details>
+        </div>
+        <div class="tier-2 rounded-lg p-3 text-sm">
+          <div class="text-xs opacity-75">T2-005 · Direct</div>
+          <div class="font-bold">Builder E</div>
+          <div class="text-xs mt-1 opacity-90">YTD: $180K</div>
+        </div>
+        <div class="tier-2 rounded-lg p-3 text-sm">
+          <div class="text-xs opacity-75">T2-006 · Direct</div>
+          <div class="font-bold">Design Center F</div>
+          <div class="text-xs mt-1 opacity-90">YTD: $160K</div>
+        </div>
+        <div class="tier-2 rounded-lg p-3 text-sm">
+          <div class="text-xs opacity-75">T2-007 · Direct</div>
+          <div class="font-bold">Builder G</div>
+          <div class="text-xs mt-1 opacity-90">YTD: $145K</div>
+        </div>
+        <div class="tier-2 rounded-lg p-3 text-sm">
+          <div class="text-xs opacity-75">T2-008 · Direct</div>
+          <div class="font-bold">Showroom H</div>
+          <div class="text-xs mt-1 opacity-90">YTD: $130K</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- T3 -->
+    <div>
+      <div class="text-sm font-bold text-slate-700 mb-3">🟠 T3 · Community (Agents / PMs / Small Contractors) · Factory price × 0.75</div>
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-2 text-xs">
+        <div class="tier-3 rounded-lg p-2">PM C1 · $48K · ↑D</div>
+        <div class="tier-3 rounded-lg p-2">Agent C2 · $35K · ↑D</div>
+        <div class="tier-3 rounded-lg p-2">Agent E1 · $32K · ↑E</div>
+        <div class="tier-3 rounded-lg p-2">PM F1 · $28K · ↑F</div>
+        <div class="tier-3 rounded-lg p-2">Contractor G1 · $24K · ↑G</div>
+        <div class="tier-3 rounded-lg p-2">Agent J · $22K · direct</div>
+        <div class="tier-3 rounded-lg p-2">Agent K · $19K · direct</div>
+        <div class="tier-3 rounded-lg p-2">PM L · $17K · direct</div>
+        <div class="tier-3 rounded-lg p-2">PM M · $14K · direct</div>
+        <div class="tier-3 rounded-lg p-2">Agent N · $12K · direct</div>
+        <div class="tier-3 rounded-lg p-2">Contractor O · $10K · direct</div>
+        <div class="tier-3 rounded-lg p-2">Agent P · $8K · direct</div>
+        <div class="tier-3 rounded-lg p-2">PM Q · $6K · direct</div>
+      </div>
+      <div class="text-xs text-slate-500 mt-2">↑ = referred by parent dealer (sub-tier reference) · YTD revenue</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUOTE ENGINE ============ -->
+<section id="tab-quote" class="tab-panel hidden">
+  <div class="mb-4 bg-white rounded-xl p-6 shadow-sm">
+    <h2 class="text-2xl font-bold text-slate-900 mb-2">
+      <span class="lang-en">Real-Time Quote Engine · Unit Cabinet Model</span>
+      <span class="lang-zh">实时报价引擎 · 单元柜模型</span>
+    </h2>
+    <p class="text-sm text-slate-500">
+      <span class="lang-en">Decomposes any kitchen into BC/SB/B/W/T series unit cabinets, matches 6-warehouse stock in real-time, applies tier discount.</span>
+      <span class="lang-zh">把任意厨房拆解为 BC/SB/B/W/T 系列单元柜，匹配 6 仓库实时库存，按 Tier 折扣自动出价。</span>
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <!-- Inputs -->
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold mb-3">Step 1 · Quote Inputs</div>
+      <label class="text-xs font-semibold text-slate-600">Dealer</label>
+      <select id="q-dealer" class="w-full mt-1 mb-3 border rounded px-2 py-1.5 text-sm" onchange="recalc()">
+        <option value="T1-001|0.55|Strategic Dealer A">T1 · Strategic Dealer A (×0.55)</option>
+        <option value="T2-001|0.65|Design Center A1">T2 · Design Center A1 (×0.65)</option>
+        <option value="T2-004|0.65|Design Center D">T2 · Design Center D (×0.65)</option>
+        <option value="T3-007|0.75|Agent J">T3 · Agent J (×0.75)</option>
+      </select>
+
+      <label class="text-xs font-semibold text-slate-600">Kitchen Type</label>
+      <select id="q-type" class="w-full mt-1 mb-3 border rounded px-2 py-1.5 text-sm" onchange="recalc()">
+        <option value="standard">Standard · 10ft L-shape</option>
+        <option value="island">With Island · 12ft L+island</option>
+        <option value="galley">Galley · 8ft straight</option>
+        <option value="luxury">Luxury · 16ft U-shape</option>
+      </select>
+
+      <label class="text-xs font-semibold text-slate-600">Style</label>
+      <select id="q-style" class="w-full mt-1 mb-3 border rounded px-2 py-1.5 text-sm" onchange="recalc()">
+        <option value="american|1.0">American Shaker (Vietnam factory)</option>
+        <option value="european|1.18">European Flat (Dallas / Jinpai)</option>
+        <option value="stainless|1.85">Stainless Steel (Guangdong, future)</option>
+      </select>
+
+      <label class="text-xs font-semibold text-slate-600">Destination Warehouse (nearest)</label>
+      <select id="q-wh" class="w-full mt-1 mb-3 border rounded px-2 py-1.5 text-sm" onchange="recalc()">
+        <option value="dallas">TX-Dallas</option>
+        <option value="ontario">CA-Ontario</option>
+        <option value="newark">NJ-Newark</option>
+        <option value="joliet">IL-Joliet</option>
+        <option value="atlanta">GA-Atlanta</option>
+        <option value="miami">FL-Miami</option>
+      </select>
+
+      <button onclick="recalc()" class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm font-semibold">▶ Generate Quote</button>
+    </div>
+
+    <!-- BOM Breakdown -->
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold mb-3">Step 2 · Unit Cabinet BOM</div>
+      <div id="bom-list" class="space-y-1.5 text-xs font-mono"></div>
+    </div>
+
+    <!-- Final Quote -->
+    <div class="bg-white rounded-lg p-5 shadow-sm glow">
+      <div class="text-sm font-semibold mb-3">Step 3 · Final Quote</div>
+      <div id="quote-result" class="space-y-2 text-sm"></div>
+      <button class="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded text-sm font-semibold">📥 Send Quote PDF to Dealer</button>
+      <div class="mt-3 text-xs text-slate-500 italic">Quote ID will be logged · 14-day validity · Auto-trigger loss-reason capture if not converted</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SETTLEMENT ============ -->
+<section id="tab-settlement" class="tab-panel hidden">
+  <div class="mb-4 bg-white rounded-xl p-6 shadow-sm">
+    <h2 class="text-2xl font-bold text-slate-900 mb-2">
+      <span class="lang-en">Auto-Settlement Engine · May 2026 Closing</span>
+      <span class="lang-zh">自动结算引擎 · 2026 年 5 月对账</span>
+    </h2>
+    <p class="text-sm text-slate-500 italic">
+      <span class="lang-en">Replaces the manual Excel + Email billing loop. Auto-generates monthly statement + referral payout for each dealer.</span>
+      <span class="lang-zh">替代手工 Excel + Email 对账。月末自动生成每家 dealer 对账单 + Referral 返点。</span>
+    </p>
+  </div>
+
+  <div class="bg-white rounded-xl p-6 shadow-sm overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-100 text-xs text-slate-600 uppercase">
+        <tr>
+          <th class="px-3 py-2 text-left">Dealer</th>
+          <th class="px-3 py-2 text-right">Tier</th>
+          <th class="px-3 py-2 text-right">Orders</th>
+          <th class="px-3 py-2 text-right">Gross</th>
+          <th class="px-3 py-2 text-right">Discount</th>
+          <th class="px-3 py-2 text-right">Net Billable</th>
+          <th class="px-3 py-2 text-right">Referral Earned</th>
+          <th class="px-3 py-2 text-right">Final Settlement</th>
+          <th class="px-3 py-2 text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody class="text-xs divide-y" id="settlement-rows"></tbody>
+      <tfoot class="bg-slate-50 font-semibold text-sm">
+        <tr>
+          <td class="px-3 py-2">TOTAL · 24 dealers</td>
+          <td class="px-3 py-2 text-right">—</td>
+          <td class="px-3 py-2 text-right">523</td>
+          <td class="px-3 py-2 text-right">$948,420</td>
+          <td class="px-3 py-2 text-right">-$461,210</td>
+          <td class="px-3 py-2 text-right">$487,210</td>
+          <td class="px-3 py-2 text-right text-emerald-700">+$18,720</td>
+          <td class="px-3 py-2 text-right">$505,930</td>
+          <td class="px-3 py-2 text-center">—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold mb-3">Aging Report</div>
+      <div class="space-y-2 text-xs">
+        <div class="flex justify-between"><span>0–30 days</span><span class="font-mono text-emerald-700">$394,210 (78%)</span></div>
+        <div class="flex justify-between"><span>31–60 days</span><span class="font-mono text-amber-700">$82,140 (16%)</span></div>
+        <div class="flex justify-between"><span>61–90 days</span><span class="font-mono text-red-700">$24,580 (5%)</span></div>
+        <div class="flex justify-between"><span>90+ days</span><span class="font-mono text-red-900">$5,000 (1%)</span></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold mb-3">Disputes (within 14-day window)</div>
+      <div class="space-y-2 text-xs">
+        <div class="border-l-2 border-amber-500 pl-2">
+          <div class="font-semibold">IN-2018 · T3 PM E1</div>
+          <div class="text-slate-500">SKU mismatch on W-3030 (claimed 2 missing) · opened 3 days ago</div>
+        </div>
+        <div class="border-l-2 border-amber-500 pl-2">
+          <div class="font-semibold">IN-2009 · T2 Builder E</div>
+          <div class="text-slate-500">Freight reversal request · opened 8 days ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REFERRAL ============ -->
+<section id="tab-referral" class="tab-panel hidden">
+  <div class="mb-4 bg-white rounded-xl p-6 shadow-sm">
+    <h2 class="text-2xl font-bold text-slate-900 mb-2">
+      <span class="lang-en">Referral Engine · 12-Month Year-Term Tracking</span>
+      <span class="lang-zh">推荐引擎 · 12 个月年期追踪</span>
+    </h2>
+    <p class="text-sm text-slate-500 italic">
+      <span class="lang-en">"If they refer someone, there's always a year-term... they earn 5% or 3% point" — Kitty</span>
+      <span class="lang-zh">「介绍这个 resource 永远它有一个年期...拿到一个比如说 5% / 3% 的一个 point」— Kitty 原话</span>
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold mb-3">Active Referral Relationships (12)</div>
+      <table class="w-full text-xs">
+        <thead class="text-slate-500">
+          <tr><th class="text-left py-1">Referrer</th><th class="text-left py-1">→ Referred</th><th class="text-right py-1">%</th><th class="text-right py-1">Term Left</th><th class="text-right py-1">YTD Earned</th></tr>
+        </thead>
+        <tbody class="font-mono divide-y" id="referral-rows"></tbody>
+      </table>
+    </div>
+
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold mb-3">Referral Rules Configuration</div>
+      <table class="w-full text-xs">
+        <thead class="text-slate-500">
+          <tr><th class="text-left py-1">From → To</th><th class="text-right py-1">Default %</th><th class="text-right py-1">Default Term</th></tr>
+        </thead>
+        <tbody class="font-mono">
+          <tr><td class="py-1.5">T1 → T1 / T2</td><td class="text-right">5.0%</td><td class="text-right">12 months</td></tr>
+          <tr><td class="py-1.5">T2 → T2 / T3</td><td class="text-right">3.0%</td><td class="text-right">12 months</td></tr>
+          <tr><td class="py-1.5">T3 → T3</td><td class="text-right">1.5% (opt)</td><td class="text-right">6 months</td></tr>
+          <tr class="text-red-600"><td class="py-1.5">Cross-skip (T3 → T1)</td><td class="text-right">—</td><td class="text-right">BLOCKED</td></tr>
+        </tbody>
+      </table>
+      <div class="mt-3 p-3 bg-slate-50 rounded text-xs">
+        <div class="font-semibold mb-1">Open question for Kitty:</div>
+        <div class="text-slate-600">Referral year-term start: from referee's first order (recommended) or relationship-declared date?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEALER PORTAL ============ -->
+<section id="tab-portal" class="tab-panel hidden">
+  <div class="mb-4 bg-white rounded-xl p-6 shadow-sm">
+    <h2 class="text-2xl font-bold text-slate-900 mb-2">
+      <span class="lang-en">Dealer Portal Preview · What dealers see (separate login)</span>
+      <span class="lang-zh">经销商端预览 · Dealer 视角（独立登录）</span>
+    </h2>
+    <p class="text-sm text-slate-500 italic">
+      <span class="lang-en">"Dealer login is different from our backend — separate interface" — Kitty</span>
+      <span class="lang-zh">「Dealer 的 login 跟我们这个后台肯定是不一样的嘛」— Kitty 原话</span>
+    </p>
+  </div>
+
+  <!-- Mock dealer browser -->
+  <div class="bg-slate-200 rounded-t-lg px-3 py-2 flex items-center gap-2">
+    <div class="flex gap-1.5"><div class="w-3 h-3 rounded-full bg-red-400"></div><div class="w-3 h-3 rounded-full bg-amber-400"></div><div class="w-3 h-3 rounded-full bg-emerald-400"></div></div>
+    <div class="ml-3 px-3 py-1 bg-white rounded text-xs flex-1">https://dealer.foa-cabinet.com — Strategic Dealer A logged in</div>
+  </div>
+  <div class="bg-white p-6 rounded-b-lg shadow">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <div class="font-bold text-lg">Welcome, Strategic Dealer A 👋</div>
+        <div class="text-xs text-slate-500">Tier 1 · Discount T1-A · Account Manager: Kitty</div>
+      </div>
+      <div class="text-right">
+        <div class="text-xs text-slate-500">May Outstanding</div>
+        <div class="text-xl font-bold">$84,520</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-slate-50 rounded-lg p-4">
+        <div class="text-xs text-slate-500">My Orders (MTD)</div>
+        <div class="text-2xl font-bold mt-1">23</div>
+        <div class="text-xs text-emerald-600 mt-1">+4 vs last month</div>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-4">
+        <div class="text-xs text-slate-500">My Quotes Active</div>
+        <div class="text-2xl font-bold mt-1">8</div>
+        <div class="text-xs text-amber-600 mt-1">2 expiring in 3 days</div>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-4">
+        <div class="text-xs text-slate-500">My Referral Income</div>
+        <div class="text-2xl font-bold mt-1 text-emerald-700">$5,400</div>
+        <div class="text-xs text-slate-500 mt-1">From 2 sub-tier referrals</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <div class="text-sm font-semibold mb-2">My Closest Warehouse Stock (TX-Dallas)</div>
+        <div class="text-xs space-y-1 font-mono">
+          <div class="flex justify-between"><span>BC-30 (Base 30")</span><span class="text-emerald-600">156 units</span></div>
+          <div class="flex justify-between"><span>BC-36 (Base 36")</span><span class="text-emerald-600">98 units</span></div>
+          <div class="flex justify-between"><span>W-3030 (Wall 30×30)</span><span class="text-amber-600">14 units · low</span></div>
+          <div class="flex justify-between"><span>T-94 (Tall 94")</span><span class="text-emerald-600">42 units</span></div>
+          <div class="flex justify-between"><span>SB-36 (Sink Base 36)</span><span class="text-red-600">0 · backorder Jun 12</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="text-sm font-semibold mb-2">Available to Me</div>
+        <ul class="text-xs space-y-1.5 text-slate-700">
+          <li>✓ Product catalog (American Shaker, European Flat)</li>
+          <li>✓ My Tier discount sheet</li>
+          <li>✓ Training videos + spec sheets</li>
+          <li>✓ Submit support ticket</li>
+          <li class="text-slate-400">✗ Other dealers' data (not visible)</li>
+          <li class="text-slate-400">✗ My competitors' pricing (not visible)</li>
+          <li class="text-slate-400">✗ FOA internal cost data (not visible)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOSS REASON ============ -->
+<section id="tab-lossreason" class="tab-panel hidden">
+  <div class="mb-4 bg-white rounded-xl p-6 shadow-sm">
+    <h2 class="text-2xl font-bold text-slate-900 mb-2">
+      <span class="lang-en">Loss Reason Capture · Auto-prompt after quote expires</span>
+      <span class="lang-zh">丢单原因登记 · 报价过期自动提示</span>
+    </h2>
+    <p class="text-sm text-slate-500 italic">
+      <span class="lang-en">"Was it price? Competitor? Lack of professionalism? — all data shows up here so you can improve" — Darren explained to Kitty</span>
+      <span class="lang-zh">「价格、竞品、不专业...都会在这里呈现，你就根据情况去改进」— Darren 解释原话</span>
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold mb-4">May 2026 · 67 lost quotes / 142 total · 47% loss rate</div>
+      <div class="space-y-3">
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>Price too high vs competitor</span><span class="font-mono">38% (25)</span></div>
+          <div class="h-2 bg-slate-100 rounded-full"><div class="h-2 bg-red-500 rounded-full" style="width:38%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>Customer chose competitor (Jinpai/Bofei/local)</span><span class="font-mono">22% (15)</span></div>
+          <div class="h-2 bg-slate-100 rounded-full"><div class="h-2 bg-orange-500 rounded-full" style="width:22%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>Dealer not professional / weak design</span><span class="font-mono">15% (10)</span></div>
+          <div class="h-2 bg-slate-100 rounded-full"><div class="h-2 bg-amber-500 rounded-full" style="width:15%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>Stock-out / lead time too long</span><span class="font-mono">10% (7)</span></div>
+          <div class="h-2 bg-slate-100 rounded-full"><div class="h-2 bg-yellow-500 rounded-full" style="width:10%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>Project delayed / canceled by customer</span><span class="font-mono">8% (5)</span></div>
+          <div class="h-2 bg-slate-100 rounded-full"><div class="h-2 bg-slate-400 rounded-full" style="width:8%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>Other</span><span class="font-mono">7% (5)</span></div>
+          <div class="h-2 bg-slate-100 rounded-full"><div class="h-2 bg-slate-300 rounded-full" style="width:7%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg p-5 shadow-sm">
+      <div class="text-sm font-semibold mb-4">Actionable Insights for Kitty</div>
+      <div class="space-y-3 text-xs">
+        <div class="p-3 bg-red-50 border-l-4 border-red-500 rounded">
+          <div class="font-semibold text-red-900">European-cabinet price problem confirmed</div>
+          <div class="text-red-700 mt-1">38% of losses are price-driven, and 80% of price-driven losses are European (Jinpai) cabinets. Matches Kitty's own observation: "金牌价钱报不出来". Action: re-negotiate Jinpai factory pricing, or accelerate stainless steel differentiation.</div>
+        </div>
+        <div class="p-3 bg-amber-50 border-l-4 border-amber-500 rounded">
+          <div class="font-semibold text-amber-900">Dealer training gap is real</div>
+          <div class="text-amber-700 mt-1">15% lost because dealers can't articulate "Dallas factory + European design" value. Action: Phase 2 standard pitch deck + training video.</div>
+        </div>
+        <div class="p-3 bg-emerald-50 border-l-4 border-emerald-500 rounded">
+          <div class="font-semibold text-emerald-900">Stock-out is mostly W-series (Wall cabinets)</div>
+          <div class="text-emerald-700 mt-1">7 of 10 stock-out losses involved W-3030 / W-3636. Action: increase safety stock at TX-Dallas + CA-Ontario by 20%.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DATA BOUNDARY ============ -->
+<section id="tab-boundary" class="tab-panel hidden">
+  <div class="mb-4 bg-white rounded-xl p-6 shadow-sm">
+    <h2 class="text-2xl font-bold text-slate-900 mb-2">
+      <span class="lang-en">Data Boundary · Why dealers will actually adopt this</span>
+      <span class="lang-zh">数据边界 · Dealer 真的愿意用 Portal 的前提</span>
+    </h2>
+    <p class="text-sm text-slate-500">
+      <span class="lang-en">If we ask dealers for retail prices and end-customer info, no one signs up. This boundary is contractual.</span>
+      <span class="lang-zh">如果系统要 dealer 报终端售价和客户信息，没人愿意上。这条边界写在合同里。</span>
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-emerald-50 border-2 border-emerald-300 rounded-lg p-5">
+      <div class="text-emerald-900 font-bold mb-3">✓ FOA Side CAN See</div>
+      <ul class="space-y-2 text-sm text-emerald-900">
+        <li>📦 Dealer order: SKU, qty, amount, shipping warehouse</li>
+        <li>📋 Quote → conversion rate per dealer</li>
+        <li>🏠 Project type, budget band (range), prep completeness</li>
+        <li>🚚 Fulfillment status (shipped / in transit / delivered)</li>
+        <li>🛠 Support ticket and resolution time</li>
+        <li>📊 Inventory levels in all 6 warehouses</li>
+        <li>📈 Loss reasons (price / competitor / etc.)</li>
+      </ul>
+    </div>
+
+    <div class="bg-red-50 border-2 border-red-300 rounded-lg p-5">
+      <div class="text-red-900 font-bold mb-3">✗ FOA Side CANNOT See</div>
+      <ul class="space-y-2 text-sm text-red-900">
+        <li>💰 Dealer's selling price to end customer</li>
+        <li>📊 Dealer's gross margin or markup %</li>
+        <li>👤 End customer name, contact, address</li>
+        <li>👥 Dealer's internal employee salaries</li>
+        <li>🏢 Dealer's overhead or operating cost</li>
+        <li>🔄 Dealer's other brands' inventory data</li>
+        <li>📁 Dealer's customer file / CRM</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-6 bg-blue-50 border-l-4 border-blue-600 rounded p-5 text-sm">
+    <div class="font-bold text-blue-900 mb-2">Why this matters strategically</div>
+    <p class="text-blue-900">
+      Most cabinet/furniture wholesale "dealer portals" fail because the wholesaler tries to get the end-customer data too. Dealers refuse — they protect their customers like their life. FOA Cabinet OS is positioned as a <strong>B2B supplier service layer</strong>, not a Dealer surveillance system. This makes adoption fundamentally different.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center text-xs text-slate-400 py-6">
+  FOA Cabinet OS · Dealer Settlement Engine · Demo v1.0 · Built 2026-05-27 night for review by Kitty · Confidential
+</footer>
+
+<script>
+// ============ TAB SWITCHING ============
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+  document.getElementById('tab-' + name).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('tab-active'); b.classList.add('tab-inactive'); });
+  event.target.classList.remove('tab-inactive'); event.target.classList.add('tab-active');
+  if (name === 'settlement') renderSettlement();
+  if (name === 'referral') renderReferrals();
+  if (name === 'quote') recalc();
+}
+
+// ============ QUOTE ENGINE ============
+const UNIT_CATALOG = {
+  standard: [
+    {sku:'BC-30', name:'Base 30"', qty:3, price:185},
+    {sku:'BC-36', name:'Base 36"', qty:2, price:215},
+    {sku:'SB-36', name:'Sink Base 36"', qty:1, price:265},
+    {sku:'W-3030', name:'Wall 30×30"', qty:3, price:155},
+    {sku:'W-3036', name:'Wall 30×36"', qty:2, price:175},
+    {sku:'T-94', name:'Tall Pantry 94"', qty:1, price:480},
+  ],
+  island: [
+    {sku:'BC-30', name:'Base 30"', qty:4, price:185},
+    {sku:'BC-36', name:'Base 36"', qty:3, price:215},
+    {sku:'SB-42', name:'Sink Base 42"', qty:1, price:295},
+    {sku:'W-3030', name:'Wall 30×30"', qty:4, price:155},
+    {sku:'W-3636', name:'Wall 36×36"', qty:2, price:195},
+    {sku:'T-94', name:'Tall Pantry 94"', qty:1, price:480},
+    {sku:'IS-72', name:'Island 72"', qty:1, price:725},
+  ],
+  galley: [
+    {sku:'BC-30', name:'Base 30"', qty:2, price:185},
+    {sku:'BC-24', name:'Base 24"', qty:2, price:165},
+    {sku:'SB-30', name:'Sink Base 30"', qty:1, price:245},
+    {sku:'W-3030', name:'Wall 30×30"', qty:2, price:155},
+    {sku:'W-3036', name:'Wall 30×36"', qty:1, price:175},
+  ],
+  luxury: [
+    {sku:'BC-36', name:'Base 36"', qty:6, price:215},
+    {sku:'BC-30', name:'Base 30"', qty:4, price:185},
+    {sku:'SB-42', name:'Sink Base 42"', qty:1, price:295},
+    {sku:'W-3636', name:'Wall 36×36"', qty:4, price:195},
+    {sku:'W-3042', name:'Wall 30×42"', qty:3, price:215},
+    {sku:'T-94', name:'Tall Pantry 94"', qty:2, price:480},
+    {sku:'IS-96', name:'Island 96"', qty:1, price:945},
+  ],
+};
+
+const WH_NAMES = {
+  dallas: 'TX-Dallas', ontario: 'CA-Ontario', newark: 'NJ-Newark',
+  joliet: 'IL-Joliet', atlanta: 'GA-Atlanta', miami: 'FL-Miami'
+};
+
+function recalc() {
+  const dealerVal = document.getElementById('q-dealer').value.split('|');
+  const dealerName = dealerVal[2]; const discount = parseFloat(dealerVal[1]);
+  const tier = dealerVal[0].split('-')[0];
+  const type = document.getElementById('q-type').value;
+  const styleVal = document.getElementById('q-style').value.split('|');
+  const styleMul = parseFloat(styleVal[1]); const styleName = styleVal[0];
+  const wh = document.getElementById('q-wh').value;
+
+  const items = UNIT_CATALOG[type];
+  let bomHtml = ''; let subtotal = 0;
+  items.forEach(it => {
+    const unitPrice = Math.round(it.price * styleMul);
+    const lineTotal = unitPrice * it.qty;
+    subtotal += lineTotal;
+    const stockClr = Math.random() > 0.15 ? 'text-emerald-600' : 'text-amber-600';
+    const stockStat = Math.random() > 0.15 ? '✓ in stock' : '⚠ low';
+    bomHtml += `<div class="flex justify-between py-1 border-b border-slate-100">
+      <span class="text-slate-700">${it.sku} · ${it.name} × ${it.qty}</span>
+      <span>$${lineTotal.toLocaleString()} <span class="${stockClr} ml-2">${stockStat}</span></span>
+    </div>`;
+  });
+  document.getElementById('bom-list').innerHTML = bomHtml;
+
+  const factoryTotal = subtotal;
+  const dealerNet = Math.round(factoryTotal * discount);
+  const freight = Math.round(factoryTotal * 0.05);
+  const final = dealerNet + freight;
+
+  document.getElementById('quote-result').innerHTML = `
+    <div class="flex justify-between"><span class="text-slate-500">Dealer</span><span class="font-semibold">${dealerName}</span></div>
+    <div class="flex justify-between"><span class="text-slate-500">Tier</span><span class="font-semibold">${tier} · ×${discount}</span></div>
+    <div class="flex justify-between"><span class="text-slate-500">Style</span><span class="font-semibold">${styleName} · ×${styleMul}</span></div>
+    <div class="flex justify-between"><span class="text-slate-500">Ship from</span><span class="font-semibold">${WH_NAMES[wh]}</span></div>
+    <div class="border-t mt-3 pt-3 space-y-1">
+      <div class="flex justify-between"><span class="text-slate-500">Factory price</span><span class="font-mono">$${factoryTotal.toLocaleString()}</span></div>
+      <div class="flex justify-between text-emerald-700"><span>Tier discount applied</span><span class="font-mono">−$${(factoryTotal-dealerNet).toLocaleString()}</span></div>
+      <div class="flex justify-between"><span class="text-slate-500">Net to dealer</span><span class="font-mono">$${dealerNet.toLocaleString()}</span></div>
+      <div class="flex justify-between"><span class="text-slate-500">Freight (est)</span><span class="font-mono">$${freight.toLocaleString()}</span></div>
+    </div>
+    <div class="border-t mt-3 pt-3 flex justify-between text-lg font-bold text-blue-900">
+      <span>Total to Dealer</span><span>$${final.toLocaleString()}</span>
+    </div>
+    <div class="text-xs text-slate-500 mt-2">Quote valid until ${new Date(Date.now()+14*864e5).toLocaleDateString()}</div>
+  `;
+}
+
+// ============ SETTLEMENT TABLE ============
+const SETTLEMENT_DATA = [
+  {name:'Strategic Dealer A', tier:'T1-A', orders:42, gross:178200, disc:80190, net:98010, ref:5400, status:'paid'},
+  {name:'Strategic Dealer B', tier:'T1-A', orders:35, gross:142800, disc:64260, net:78540, ref:1840, status:'paid'},
+  {name:'Strategic Dealer C', tier:'T1-B', orders:28, gross:108800, disc:46240, net:62560, ref:0, status:'pending'},
+  {name:'Design Center A1', tier:'T2-A', orders:18, gross:62400, disc:21840, net:40560, ref:1242, status:'paid'},
+  {name:'Builder A2', tier:'T2-B', orders:12, gross:38800, disc:13580, net:25220, ref:540, status:'paid'},
+  {name:'Design Center B1', tier:'T2-B', orders:11, gross:35600, disc:12460, net:23140, ref:0, status:'paid'},
+  {name:'Design Center D', tier:'T2-A', orders:14, gross:48200, disc:16870, net:31330, ref:984, status:'pending'},
+  {name:'Builder E', tier:'T2-B', orders:9, gross:27600, disc:9660, net:17940, ref:0, status:'paid'},
+  {name:'Design Center F', tier:'T2-B', orders:8, gross:24800, disc:8680, net:16120, ref:0, status:'paid'},
+  {name:'Builder G', tier:'T2-B', orders:7, gross:21800, disc:7630, net:14170, ref:0, status:'paid'},
+  {name:'Showroom H', tier:'T2-B', orders:6, gross:18400, disc:6440, net:11960, ref:0, status:'paid'},
+  {name:'PM C1 (sub of D)', tier:'T3', orders:9, gross:14200, disc:3550, net:10650, ref:0, status:'paid'},
+  {name:'Agent C2 (sub of D)', tier:'T3', orders:7, gross:10800, disc:2700, net:8100, ref:0, status:'paid'},
+  {name:'Agent E1 (sub of E)', tier:'T3', orders:6, gross:9200, disc:2300, net:6900, ref:0, status:'dispute'},
+  {name:'+ 10 more T3 dealers', tier:'T3', orders:48, gross:55020, disc:13755, net:41265, ref:1294, status:'mixed'},
+];
+function renderSettlement() {
+  const tbody = document.getElementById('settlement-rows');
+  if (!tbody) return;
+  tbody.innerHTML = SETTLEMENT_DATA.map(r => {
+    const final = r.net + r.ref;
+    const stClr = r.status==='paid'?'bg-emerald-100 text-emerald-800':r.status==='pending'?'bg-slate-100 text-slate-600':r.status==='dispute'?'bg-amber-100 text-amber-800':'bg-blue-100 text-blue-800';
+    return `<tr>
+      <td class="px-3 py-1.5">${r.name}</td>
+      <td class="px-3 py-1.5 text-right font-mono">${r.tier}</td>
+      <td class="px-3 py-1.5 text-right font-mono">${r.orders}</td>
+      <td class="px-3 py-1.5 text-right font-mono">$${r.gross.toLocaleString()}</td>
+      <td class="px-3 py-1.5 text-right font-mono text-red-600">-$${r.disc.toLocaleString()}</td>
+      <td class="px-3 py-1.5 text-right font-mono">$${r.net.toLocaleString()}</td>
+      <td class="px-3 py-1.5 text-right font-mono text-emerald-700">${r.ref?'+$'+r.ref.toLocaleString():'—'}</td>
+      <td class="px-3 py-1.5 text-right font-mono font-semibold">$${final.toLocaleString()}</td>
+      <td class="px-3 py-1.5 text-center"><span class="${stClr} px-2 py-0.5 rounded text-xs">${r.status}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ============ REFERRAL TABLE ============
+const REFERRAL_DATA = [
+  {from:'Strategic Dealer A', to:'Design Center A1', pct:'5%', term:'8 mo', ytd:4860},
+  {from:'Strategic Dealer A', to:'Builder A2', pct:'5%', term:'11 mo', ytd:540},
+  {from:'Strategic Dealer B', to:'Design Center B1', pct:'5%', term:'3 mo', ytd:1840},
+  {from:'Design Center D', to:'PM C1', pct:'3%', term:'7 mo', ytd:984},
+  {from:'Design Center D', to:'Agent C2', pct:'3%', term:'7 mo', ytd:432},
+  {from:'Builder E', to:'Agent E1', pct:'3%', term:'9 mo', ytd:324},
+  {from:'Design Center F', to:'PM F1', pct:'3%', term:'4 mo', ytd:268},
+  {from:'Builder G', to:'Contractor G1', pct:'3%', term:'5 mo', ytd:210},
+  {from:'Agent J', to:'PM L', pct:'1.5%', term:'2 mo', ytd:84},
+  {from:'PM M', to:'Agent N', pct:'1.5%', term:'1 mo', ytd:42},
+  {from:'Agent K', to:'Agent P', pct:'1.5%', term:'5 mo', ytd:112},
+  {from:'Contractor O', to:'PM Q', pct:'1.5%', term:'3 mo', ytd:36},
+];
+function renderReferrals() {
+  const tbody = document.getElementById('referral-rows');
+  if (!tbody) return;
+  tbody.innerHTML = REFERRAL_DATA.map(r =>
+    `<tr>
+      <td class="py-1.5">${r.from}</td>
+      <td class="py-1.5">→ ${r.to}</td>
+      <td class="py-1.5 text-right">${r.pct}</td>
+      <td class="py-1.5 text-right">${r.term}</td>
+      <td class="py-1.5 text-right text-emerald-700">$${r.ytd.toLocaleString()}</td>
+    </tr>`
+  ).join('');
+}
+
+// init
+recalc();
+
+// ============ LIVE FEED simulation ============
+setInterval(() => {
+  const feeds = document.querySelectorAll('.live-feed');
+  feeds.forEach(f => {
+    const t = new Date().toTimeString().slice(0,5);
+    const msgs = [
+      `[${t}] Quote Q-${2870+Math.floor(Math.random()*20)} sent to T${Math.floor(Math.random()*3)+1} dealer`,
+      `[${t}] Order O-${4520+Math.floor(Math.random()*15)} fulfilled from CA-Ontario`,
+      `[${t}] Referral payout calculated: $${Math.floor(Math.random()*900+100)}`,
+      `[${t}] WH-Dallas inventory sync · 23 SKUs updated`,
+      `[${t}] Loss reason recorded: price vs Bofei competitor`,
+    ];
+    const newLine = document.createElement('div');
+    newLine.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+    f.insertBefore(newLine, f.firstChild);
+    if (f.children.length > 8) f.removeChild(f.lastChild);
+  });
+}, 4500);
+</script>
+
+</body>
+</html>
