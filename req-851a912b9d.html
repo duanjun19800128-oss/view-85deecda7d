@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-store">
+<title>FOA 数字化项目 · 开发需求收集表 / Requirements Intake</title>
+<style>
+  :root{
+    --brand:#13495a; --brand2:#1f6f7a; --accent:#1f8a70; --gold:#c08a2e;
+    --bg:#eef2f3; --panel:#ffffff; --ink:#1d2730; --sub:#5d6b73; --line:#dde5e8;
+    --on:#13495a; --shadow:0 1px 3px rgba(20,40,50,.07),0 6px 20px rgba(20,40,50,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Segoe UI","Microsoft YaHei",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  /* 顶栏 */
+  .top{position:sticky;top:0;z-index:30;background:linear-gradient(135deg,#13495a,#1f6f7a);color:#fff;padding:13px 16px;box-shadow:0 2px 10px rgba(20,40,50,.18)}
+  .top .ttl{font-size:16px;font-weight:800;letter-spacing:.3px}
+  .top .sub{font-size:11.5px;opacity:.85;margin-top:2px}
+  .bar{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .prog{flex:1;height:7px;background:rgba(255,255,255,.25);border-radius:5px;overflow:hidden}
+  .prog i{display:block;height:100%;background:#7fe0c4;width:0;transition:.3s}
+  .pct{font-size:11.5px;font-weight:700;white-space:nowrap;min-width:74px;text-align:right}
+  .wrap{max-width:860px;margin:0 auto;padding:14px 14px 120px}
+  .intro{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:13px 15px;box-shadow:var(--shadow);margin-bottom:16px;font-size:12.8px;color:var(--sub);line-height:1.7}
+  .intro b{color:var(--ink)}
+  .sec{background:var(--panel);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+  .sec>.hd{background:#f3f7f8;border-bottom:1px solid var(--line);padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px}
+  .sec>.hd .ix{width:25px;height:25px;flex:none;border-radius:7px;background:var(--brand);color:#fff;font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .sec>.hd .nm{font-size:14.5px;font-weight:800}
+  .sec>.hd .nm small{display:block;font-size:10.5px;font-weight:500;color:var(--sub);margin-top:1px}
+  .sec>.hd .cv{margin-left:auto;font-size:11px;color:var(--sub)}
+  .sec>.hd .ar{margin-left:8px;color:var(--sub);transition:.2s}
+  .sec.col .ar{transform:rotate(-90deg)}
+  .sec.col .bd{display:none}
+  .bd{padding:6px 16px 16px}
+  .fld{padding:13px 0;border-bottom:1px dashed var(--line)}
+  .fld:last-child{border:none}
+  .q{font-size:13px;font-weight:700;margin-bottom:3px}
+  .q .en{font-weight:500;color:var(--sub);font-size:11.5px}
+  .q .star{color:var(--gold);margin-left:3px}
+  .hint{font-size:11px;color:var(--sub);margin-bottom:7px}
+  input[type=text],textarea,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:inherit;color:var(--ink);background:#fcfdfd}
+  input[type=text]:focus,textarea:focus,select:focus{outline:none;border-color:var(--brand2);box-shadow:0 0 0 3px rgba(31,111,122,.12)}
+  textarea{min-height:64px;resize:vertical;line-height:1.6}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .chip{font-size:12.5px;padding:7px 13px;border-radius:20px;border:1px solid var(--line);background:#fcfdfd;cursor:pointer;color:var(--ink);user-select:none;transition:.12s}
+  .chip:hover{border-color:var(--brand2)}
+  .chip.on{background:var(--on);color:#fff;border-color:var(--on);font-weight:600}
+  .chip .e{opacity:.7;font-size:11px;margin-left:3px}
+  /* 底部操作条 */
+  .actions{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:10px 14px;display:flex;gap:9px;align-items:center;box-shadow:0 -3px 14px rgba(20,40,50,.07)}
+  .actions .save-ind{font-size:11px;color:var(--accent);white-space:nowrap}
+  .btn{flex:1;border:none;border-radius:10px;padding:12px 10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px}
+  .btn.x{background:var(--accent);color:#fff}
+  .btn.x:active{filter:brightness(.94)}
+  .btn.g{background:#eef2f3;color:var(--brand);border:1px solid var(--line)}
+  .btn.sm{flex:none;padding:12px 13px}
+  .foot{max-width:860px;margin:0 auto;padding:4px 16px 0;font-size:11px;color:var(--sub);line-height:1.7}
+  .toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%) translateY(20px);background:#1d2730;color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;opacity:0;transition:.3s;z-index:60;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media(max-width:560px){.top .ttl{font-size:14.5px}.wrap{padding:12px 10px 120px}.bd{padding:4px 13px 14px}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="ttl">FOA 数字化项目 · 开发需求收集表</div>
+  <div class="sub">FOA Digitalization — Development Requirements Intake　|　约 15–20 分钟 · 可随时保存继续</div>
+  <div class="bar"><div class="prog"><i id="progbar"></i></div><div class="pct" id="pct">已填 0 / 0</div></div>
+</div>
+
+<div class="wrap">
+  <div class="intro">
+    👋 这份表帮我们快速摸清 FOA 的实际业务流程，<b>填得越具体，我们就能越快做出贴合你们经销商（Dealer）模式的系统</b>。<br>
+    <span style="color:var(--ink)">This short form helps us understand FOA's real workflow so we can build a system that fits your dealer model. The more specific, the faster we can start.</span><br>
+    🔒 <b>你填的内容只存在你这台设备上</b>，不会自动上传任何服务器。填好后点底部「导出 Excel」，把文件发回给我们即可。带 <span style="color:var(--gold)">★</span> 的是我们最想了解的重点项。
+  </div>
+  <div id="form"></div>
+  <div class="foot">
+    本表仅用于 FOA 数字化合作的需求收集 · 内容保密 · This form is for FOA project requirement gathering only.
+  </div>
+</div>
+
+<div class="actions">
+  <span class="save-ind" id="saveInd">✓ 已自动保存</span>
+  <button class="btn x" onclick="exportXlsx()">⬇︎ 导出 Excel</button>
+  <button class="btn g sm" onclick="exportCsv()">CSV</button>
+  <button class="btn g sm" onclick="clearAll()">清空</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== 表单定义（中英双语 · 聚焦优先模块） ===================== */
+const FORM=[
+ {t:"基本信息", en:"Company & Contact", fields:[
+   {id:"company",q:"公司 / 品牌名称",en:"Company / Brand",t:"text"},
+   {id:"name",q:"填表人",en:"Your name",t:"text",star:1},
+   {id:"role",q:"角色 / 职务",en:"Role / Title",t:"text"},
+   {id:"contact",q:"联系方式（邮箱 / 电话 / 微信）",en:"Contact (email / phone / WeChat)",t:"text"},
+   {id:"date",q:"填表日期",en:"Date",t:"text"},
+   {id:"curSys",q:"目前在用的系统 / 工具",en:"Current systems / tools",t:"checks",opts:[["手工 Excel","Excel"],["QuickBooks","QuickBooks"],["NetSuite","NetSuite"],["自研系统","In-house"],["邮件 + 电话","Email/Phone"],["其他","Other"]]},
+   {id:"pains",q:"目前最头疼的 3 个问题",en:"Top 3 pain points today",t:"textarea",star:1},
+ ]},
+ {t:"业务规模", en:"Business Scale", fields:[
+   {id:"dealers",q:"经销商（Dealer）数量",en:"Number of dealers",t:"text",star:1},
+   {id:"warehouses",q:"仓库数量及大致位置",en:"# of warehouses & locations",t:"text",star:1},
+   {id:"instock",q:"现货发货比例（约 %）",en:"In-stock ship rate (approx %)",t:"text"},
+   {id:"factory",q:"工厂 / 产品线",en:"Factory / product lines",t:"checks",opts:[["美式（越南厂）","US-style (Vietnam)"],["欧式（达拉斯）","Euro-style (Dallas)"],["不锈钢","Stainless"],["其他","Other"]]},
+   {id:"skus",q:"在管 SKU 数量（约）",en:"Approx. # of SKUs",t:"text"},
+   {id:"orders",q:"月均订单量（约）",en:"Approx. monthly orders",t:"text"},
+ ]},
+ {t:"报价台（单元柜）", en:"Quoting (Unit Cabinet) — Kitty 明确要", fields:[
+   {id:"quoteNow",q:"现在你们怎么给经销商报价？",en:"How do you quote dealers today?",t:"textarea",star:1},
+   {id:"quoteUnit",q:"报价的计价单位",en:"You quote by",t:"radio",opts:[["按单元柜(BC/SB/B/W/T)","Per unit cabinet"],["整套方案","Full package"],["线性尺寸","Linear ft"],["其他","Other"]],star:1},
+   {id:"cabTypes",q:"在用的单元柜种类（如 Base/Wall/Tall/Sink Base…）",en:"Cabinet unit types in use",t:"textarea"},
+   {id:"stockMatch",q:"是否需要「6 仓现货实时匹配」（报价时自动看哪个仓有货）？",en:"Need real-time multi-warehouse stock match in quotes?",t:"radio",opts:[["需要","Need it"],["不需要","No"],["想了解","Tell me more"]],star:1},
+   {id:"tierPrice",q:"价格是否按经销商等级分层？",en:"Tiered pricing by dealer level?",t:"radio",opts:[["是","Yes"],["否","No"],["计划做","Planned"]]},
+   {id:"quoteApprove",q:"报价审批 / 改价的流程是怎样的？",en:"Quote approval / price-change flow",t:"textarea"},
+ ]},
+ {t:"经销商结算 + 返点", en:"Dealer Settlement & Referral — 第一需求", fields:[
+   {id:"tiers",q:"经销商分几个等级 / 层级？",en:"How many dealer tiers?",t:"text",star:1},
+   {id:"rates",q:"各等级的返点 / 折扣比例（如 T1 5%、T2 3%）",en:"Referral / discount rate per tier",t:"textarea",star:1},
+   {id:"subTier",q:"有没有二级推荐返点（Sub-Tier / 推荐分成）？",en:"Sub-tier / referral commission?",t:"radio",opts:[["有","Yes"],["无","No"],["计划做","Planned"]],star:1},
+   {id:"subTierDetail",q:"若有，请说明规则（谁推荐谁、分几层、各几个点）",en:"If yes, describe the rule",t:"textarea"},
+   {id:"cycle",q:"结算 / 对账周期",en:"Settlement cycle",t:"radio",opts:[["按单","Per order"],["按周","Weekly"],["按月","Monthly"],["按季","Quarterly"],["其他","Other"]]},
+   {id:"reconNow",q:"现在和经销商怎么对账？",en:"How do you reconcile with dealers now?",t:"textarea"},
+   {id:"settlePain",q:"结算 / 返点上最大的痛点",en:"Biggest settlement / referral pain",t:"textarea"},
+ ]},
+ {t:"合同 / 协议 + 应收", en:"Contracts & Receivables", fields:[
+   {id:"agreement",q:"经销协议的主要条款（返货 / 价保 / 区域 / 最低进货…）",en:"Dealer agreement key terms",t:"textarea"},
+   {id:"terms",q:"账期",en:"Payment terms",t:"checks",opts:[["预付","Prepay"],["货到付款","COD"],["Net 30","Net 30"],["Net 60","Net 60"],["其他","Other"]]},
+   {id:"credit",q:"是否给经销商设信用额度？",en:"Credit limit per dealer?",t:"radio",opts:[["是","Yes"],["否","No"]]},
+   {id:"poFlow",q:"逐单下单（PO）的流程",en:"Per-order PO process",t:"textarea"},
+   {id:"collect",q:"逾期 / 欠款现在怎么催收？",en:"How do you collect overdue?",t:"textarea"},
+ ]},
+ {t:"订单履约流程", en:"Order Fulfillment", fields:[
+   {id:"flow",q:"从经销商下单到签收，完整有哪些步骤？",en:"Order-to-delivery — list the steps",t:"textarea",star:1},
+   {id:"owners",q:"每一步分别由谁 / 哪个岗位负责？",en:"Who owns each step?",t:"textarea"},
+   {id:"allocRule",q:"由哪个仓发货怎么决定（就近 / 库存优先 / 指定）？",en:"Warehouse allocation rule",t:"textarea"},
+   {id:"returns",q:"退换货的流程",en:"Returns / exchanges process",t:"textarea"},
+   {id:"replenish",q:"缺货 / 补货怎么处理？",en:"Out-of-stock / replenishment",t:"textarea"},
+ ]},
+ {t:"经销商自助门户", en:"Dealer Self-Service Portal", fields:[
+   {id:"selfServe",q:"希望经销商能自助做哪些事？",en:"What should dealers self-serve?",t:"checks",opts:[["下单","Place orders"],["查现货库存","Check stock"],["查订单状态","Track orders"],["查对账单","Statements"],["查返点收益","Referral earnings"],["下载发票","Invoices"],["其他","Other"]]},
+   {id:"portalNo",q:"哪些数据经销商「绝对不能看到」？（权限边界）",en:"What data must dealers NOT see?",t:"textarea",star:1},
+   {id:"orderNow",q:"经销商现在是怎么下单的？",en:"How do dealers place orders today?",t:"text"},
+ ]},
+ {t:"数据现状 & 系统集成", en:"Data & Integration", fields:[
+   {id:"dataWhere",q:"目前业务数据主要存在哪里？",en:"Where does your data live now?",t:"checks",opts:[["Excel 表格","Excel files"],["会计软件","Accounting SW"],["WMS / 库存系统","WMS"],["邮件 / 纸质","Email/Paper"],["其他","Other"]]},
+   {id:"exportFields",q:"现在能导出哪些字段？（合同 / 订单 / 库存 / 收款）",en:"What fields can you export today?",t:"textarea"},
+   {id:"integrate",q:"需要和哪些系统打通？（会计 / 物流 / 电商平台…）",en:"Integrations needed",t:"textarea"},
+   {id:"avoidErp",q:"是否希望避免重型 ERP（如 Oracle / SAP）？",en:"Prefer to avoid heavy ERP?",t:"radio",opts:[["是，要轻量","Yes, keep light"],["无所谓","No preference"],["已有 ERP 需对接","Have ERP, integrate"]]},
+ ]},
+ {t:"AI 助理期望", en:"AI Assistant", fields:[
+   {id:"ai",q:"最想要哪些 AI 自动化？",en:"Which AI automations do you want?",t:"checks",opts:[["催收话术","Dunning msgs"],["客服问答","Customer Q&A"],["补货建议","Replenishment"],["报价生成","Quote drafting"],["对账核对","Reconciliation"],["其他","Other"]]},
+ ]},
+ {t:"优先级 / 时间 / 预算", en:"Priority, Timeline & Budget", fields:[
+   {id:"priority",q:"最想「先上线」哪 1–2 块？",en:"Top 1–2 modules to start with",t:"checks",opts:[["报价台","Quoting"],["结算 + 返点","Settlement"],["合同 + 应收","Contracts & AR"],["订单履约","Fulfillment"],["经销商门户","Dealer portal"],["数据中台","Data hub"],["AI 助理","AI assistant"]],star:1},
+   {id:"timeline",q:"期望多久看到第一版成果？",en:"Desired timeline for v1",t:"text"},
+   {id:"budget",q:"预算意向（可选）",en:"Budget range (optional)",t:"text"},
+   {id:"notes",q:"其他想补充的",en:"Anything else?",t:"textarea"},
+ ]},
+];
+
+/* ===================== 状态 & 渲染 ===================== */
+const KEY="foa_req_v1";
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+if(!state.date){const d=new Date();state.date=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+function fieldHtml(f){
+  const star=f.star?'<span class="star">★</span>':'';
+  let inner="";
+  if(f.t==="text") inner=`<input type="text" value="${esc(state[f.id]||"")}" oninput="setV('${f.id}',this.value)">`;
+  else if(f.t==="textarea") inner=`<textarea oninput="setV('${f.id}',this.value)">${esc(state[f.id]||"")}</textarea>`;
+  else if(f.t==="radio"||f.t==="checks"){
+    const multi=f.t==="checks";
+    inner=`<div class="chips">`+f.opts.map(o=>`<span class="chip" data-chip="${f.id}" data-val="${esc(o[0])}" onclick="pick('${f.id}','${esc(o[0]).replace(/'/g,"\\'")}',${multi})">${esc(o[0])}<span class="e">${esc(o[1])}</span></span>`).join("")+`</div>`;
+  }
+  return `<div class="fld"><div class="q">${esc(f.q)}${star} <span class="en">${esc(f.en)}</span></div>${inner}</div>`;
+}
+
+function render(){
+  document.getElementById("form").innerHTML=FORM.map((sec,si)=>`
+    <div class="sec" id="sec${si}">
+      <div class="hd" onclick="toggleSec(${si})">
+        <span class="ix">${si}</span>
+        <span class="nm">${esc(sec.t)}<small>${esc(sec.en)}</small></span>
+        <span class="cv" id="cv${si}"></span>
+        <span class="ar">▾</span>
+      </div>
+      <div class="bd">${sec.fields.map(fieldHtml).join("")}</div>
+    </div>`).join("");
+  FORM.forEach(s=>s.fields.forEach(f=>{if(f.t==="radio"||f.t==="checks")renderChips(f.id);}));
+  updateProgress();
+}
+function toggleSec(si){document.getElementById("sec"+si).classList.toggle("col");}
+function setV(id,v){state[id]=v;save();}
+function pick(id,val,multi){
+  if(multi){let a=Array.isArray(state[id])?state[id]:[];const i=a.indexOf(val);if(i>=0)a.splice(i,1);else a.push(val);state[id]=a;}
+  else{state[id]=state[id]===val?"":val;}
+  save();renderChips(id);
+}
+function renderChips(id){
+  document.querySelectorAll('[data-chip="'+id+'"]').forEach(el=>{
+    const v=state[id];const on=Array.isArray(v)?v.includes(el.dataset.val):v===el.dataset.val;
+    el.classList.toggle("on",on);
+  });
+}
+let saveTimer;
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(state));
+  const ind=document.getElementById("saveInd");ind.textContent="✓ 已自动保存";ind.style.opacity="1";
+  updateProgress();
+}
+function filled(v){return Array.isArray(v)?v.length>0:(v!=null&&String(v).trim()!=="");}
+function updateProgress(){
+  let total=0,done=0;
+  FORM.forEach(s=>s.fields.forEach(f=>{total++;if(filled(state[f.id]))done++;}));
+  document.getElementById("pct").textContent="已填 "+done+" / "+total;
+  document.getElementById("progbar").style.width=(total?Math.round(done/total*100):0)+"%";
+  FORM.forEach((s,si)=>{let t=0,d=0;s.fields.forEach(f=>{t++;if(filled(state[f.id]))d++;});const cv=document.getElementById("cv"+si);if(cv)cv.textContent=d+"/"+t;});
+}
+function clearAll(){
+  if(!confirm("确定清空所有已填内容？此操作不可恢复。\nClear everything? This cannot be undone."))return;
+  state={};localStorage.removeItem(KEY);
+  const d=new Date();state.date=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  render();toast("已清空");
+}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1900);}
+
+/* ===================== 导出行数据 ===================== */
+function buildRows(){
+  const now=new Date();
+  const ts=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0")+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+  const rows=[];
+  rows.push(["FOA 数字化项目 · 开发需求收集表 / Requirements Intake"]);
+  rows.push(["导出时间 Exported",ts]);
+  rows.push(["填表人 Filled by",String(state.name||"")]);
+  rows.push([]);
+  rows.push(["模块 Section","问题 Question","回答 Answer"]);
+  FORM.forEach(sec=>{
+    sec.fields.forEach(f=>{
+      let v=state[f.id];if(Array.isArray(v))v=v.join("; ");v=v==null?"":String(v);
+      rows.push([sec.t+" / "+sec.en, f.q+"  ("+f.en+")", v]);
+    });
+  });
+  return rows;
+}
+function fname(ext){
+  const now=new Date();const d=now.getFullYear()+String(now.getMonth()+1).padStart(2,"0")+String(now.getDate()).padStart(2,"0");
+  const who=(state.company||state.name||"FOA").replace(/[^\w一-龥]/g,"");
+  return "FOA需求收集_"+who+"_"+d+"."+ext;
+}
+
+/* ---------- CSV 导出（带 BOM，Excel 可直接打开） ---------- */
+function exportCsv(){
+  const rows=buildRows();
+  const csv=rows.map(r=>r.map(c=>{c=String(c==null?"":c);return /[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c;}).join(",")).join("\r\n");
+  const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"});
+  dl(blob,fname("csv"));toast("已导出 CSV，请发回给我们");
+}
+
+/* ---------- XLSX 导出（自建 ZIP-STORE + inlineStr，真正 .xlsx） ---------- */
+const CRC=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0;}return t;})();
+function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRC[(c^u8[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function colName(n){let s="";n++;while(n>0){let m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-m-1)/26);}return s;}
+function sheetXml(rows){
+  let body="";
+  rows.forEach((row,ri)=>{
+    let cells="";
+    row.forEach((val,ci)=>{
+      const ref=colName(ci)+(ri+1);
+      cells+=`<c r="${ref}" t="inlineStr"><is><t xml:space="preserve">${esc(val)}</t></is></c>`;
+    });
+    body+=`<row r="${ri+1}">${cells}</row>`;
+  });
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">`+
+    `<cols><col min="1" max="1" width="26"/><col min="2" max="2" width="52"/><col min="3" max="3" width="60"/></cols>`+
+    `<sheetData>${body}</sheetData></worksheet>`;
+}
+function zipStore(files){
+  const enc=new TextEncoder();let parts=[],offset=0,central=[];
+  const u16=n=>[n&255,(n>>8)&255];const u32=n=>[n&255,(n>>8)&255,(n>>16)&255,(n>>24)&255];
+  files.forEach(f=>{
+    const nb=enc.encode(f.name);const data=f.data;const crc=crc32(data);const sz=data.length;
+    const local=[0x50,0x4b,0x03,0x04].concat(u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nb.length),u16(0));
+    parts.push(new Uint8Array(local));parts.push(nb);parts.push(data);
+    central.push({nb,crc,sz,offset});
+    offset+=local.length+nb.length+sz;
+  });
+  const cdStart=offset;let cdLen=0;
+  central.forEach(c=>{
+    const h=[0x50,0x4b,0x01,0x02].concat(u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(c.crc),u32(c.sz),u32(c.sz),u16(c.nb.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(c.offset));
+    parts.push(new Uint8Array(h));parts.push(c.nb);cdLen+=h.length+c.nb.length;
+  });
+  const eocd=[0x50,0x4b,0x05,0x06].concat(u16(0),u16(0),u16(central.length),u16(central.length),u32(cdLen),u32(cdStart),u16(0));
+  parts.push(new Uint8Array(eocd));
+  let total=parts.reduce((a,p)=>a+p.length,0),out=new Uint8Array(total),p=0;
+  parts.forEach(x=>{out.set(x,p);p+=x.length;});
+  return out;
+}
+function exportXlsx(){
+  try{
+    const enc=new TextEncoder();
+    const rows=buildRows();
+    const CT=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>`;
+    const RELS=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+    const WB=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="FOA需求 Requirements" sheetId="1" r:id="rId1"/></sheets></workbook>`;
+    const WBR=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`;
+    const SH=sheetXml(rows);
+    const files=[
+      {name:"[Content_Types].xml",data:enc.encode(CT)},
+      {name:"_rels/.rels",data:enc.encode(RELS)},
+      {name:"xl/workbook.xml",data:enc.encode(WB)},
+      {name:"xl/_rels/workbook.xml.rels",data:enc.encode(WBR)},
+      {name:"xl/worksheets/sheet1.xml",data:enc.encode(SH)},
+    ];
+    const bytes=zipStore(files);
+    const blob=new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    dl(blob,fname("xlsx"));toast("已导出 Excel，请发回给我们");
+  }catch(e){alert("导出失败，请改用 CSV 按钮。\n"+e);}
+}
+function dl(blob,name){
+  const a=document.createElement("a");const url=URL.createObjectURL(blob);
+  a.href=url;a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},800);
+}
+
+render();
+</script>
+</body>
+</html>
