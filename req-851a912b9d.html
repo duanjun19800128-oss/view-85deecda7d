@@ -14,7 +14,6 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Segoe UI","Microsoft YaHei",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
-  /* 顶栏 */
   .top{position:sticky;top:0;z-index:30;background:linear-gradient(135deg,#13495a,#1f6f7a);color:#fff;padding:13px 16px;box-shadow:0 2px 10px rgba(20,40,50,.18)}
   .top .ttl{font-size:16px;font-weight:800;letter-spacing:.3px}
   .top .sub{font-size:11.5px;opacity:.85;margin-top:2px}
@@ -40,16 +39,16 @@
   .q{font-size:13px;font-weight:700;margin-bottom:3px}
   .q .en{font-weight:500;color:var(--sub);font-size:11.5px}
   .q .star{color:var(--gold);margin-left:3px}
-  .hint{font-size:11px;color:var(--sub);margin-bottom:7px}
   input[type=text],textarea,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:inherit;color:var(--ink);background:#fcfdfd}
   input[type=text]:focus,textarea:focus,select:focus{outline:none;border-color:var(--brand2);box-shadow:0 0 0 3px rgba(31,111,122,.12)}
-  textarea{min-height:64px;resize:vertical;line-height:1.6}
+  textarea{min-height:60px;resize:vertical;line-height:1.6}
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
   .chip{font-size:12.5px;padding:7px 13px;border-radius:20px;border:1px solid var(--line);background:#fcfdfd;cursor:pointer;color:var(--ink);user-select:none;transition:.12s}
   .chip:hover{border-color:var(--brand2)}
   .chip.on{background:var(--on);color:#fff;border-color:var(--on);font-weight:600}
   .chip .e{opacity:.7;font-size:11px;margin-left:3px}
-  /* 底部操作条 */
+  .otherbox{margin-top:9px}
+  .otherbox input{border-style:dashed;border-color:var(--gold);background:#fffdf6}
   .actions{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:10px 14px;display:flex;gap:9px;align-items:center;box-shadow:0 -3px 14px rgba(20,40,50,.07)}
   .actions .save-ind{font-size:11px;color:var(--accent);white-space:nowrap}
   .btn{flex:1;border:none;border-radius:10px;padding:12px 10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px}
@@ -67,19 +66,19 @@
 
 <div class="top">
   <div class="ttl">FOA 数字化项目 · 开发需求收集表</div>
-  <div class="sub">FOA Digitalization — Development Requirements Intake　|　约 15–20 分钟 · 可随时保存继续</div>
+  <div class="sub">FOA Digitalization — Development Requirements Intake　|　约 10–15 分钟 · 大多是选择题 · 可随时保存继续</div>
   <div class="bar"><div class="prog"><i id="progbar"></i></div><div class="pct" id="pct">已填 0 / 0</div></div>
 </div>
 
 <div class="wrap">
   <div class="intro">
-    👋 这份表帮我们快速摸清 FOA 的实际业务流程，<b>填得越具体，我们就能越快做出贴合你们经销商（Dealer）模式的系统</b>。<br>
-    <span style="color:var(--ink)">This short form helps us understand FOA's real workflow so we can build a system that fits your dealer model. The more specific, the faster we can start.</span><br>
-    🔒 <b>你填的内容只存在你这台设备上</b>，不会自动上传任何服务器。填好后点底部「导出 Excel」，把文件发回给我们即可。带 <span style="color:var(--gold)">★</span> 的是我们最想了解的重点项。
+    👋 这份表帮我们快速摸清 FOA 的实际业务流程，<b>大多是选择题，点一点就行；选项里没有的，选「其他」手动填</b>。填得越准，我们就能越快做出贴合你们经销商（Dealer）模式的系统。<br>
+    <span style="color:var(--ink)">Mostly multiple-choice — just tap. If an option isn't listed, pick "其他 / Other" and type your own.</span><br>
+    🔒 <b>你填的内容只存在你这台设备上</b>，不会自动上传。填好后点底部「导出 Excel」，把文件发回给我们即可。带 <span style="color:var(--gold)">★</span> 的是我们最想了解的重点项。
   </div>
   <div id="form"></div>
   <div class="foot">
-    本表仅用于 FOA 数字化合作的需求收集 · 内容保密 · This form is for FOA project requirement gathering only.
+    本表仅用于 FOA 数字化合作的需求收集 · 内容保密 · For FOA project requirement gathering only.
   </div>
 </div>
 
@@ -92,84 +91,84 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ===================== 表单定义（中英双语 · 聚焦优先模块） ===================== */
+/* ===================== 表单定义（中英双语 · 尽量选择题 · 每题可选「其他」手填） ===================== */
 const FORM=[
  {t:"基本信息", en:"Company & Contact", fields:[
    {id:"company",q:"公司 / 品牌名称",en:"Company / Brand",t:"text"},
    {id:"name",q:"填表人",en:"Your name",t:"text",star:1},
-   {id:"role",q:"角色 / 职务",en:"Role / Title",t:"text"},
-   {id:"contact",q:"联系方式（邮箱 / 电话 / 微信）",en:"Contact (email / phone / WeChat)",t:"text"},
+   {id:"role",q:"你的角色 / 职务",en:"Your role",t:"radio",other:1,opts:[["老板 / 总经理","Owner/GM"],["运营负责人","Ops lead"],["财务","Finance"],["IT / 技术","IT"],["销售","Sales"],["其他","Other"]]},
+   {id:"contact",q:"联系方式（邮箱 / 电话 / 微信）",en:"Contact",t:"text"},
    {id:"date",q:"填表日期",en:"Date",t:"text"},
-   {id:"curSys",q:"目前在用的系统 / 工具",en:"Current systems / tools",t:"checks",opts:[["手工 Excel","Excel"],["QuickBooks","QuickBooks"],["NetSuite","NetSuite"],["自研系统","In-house"],["邮件 + 电话","Email/Phone"],["其他","Other"]]},
-   {id:"pains",q:"目前最头疼的 3 个问题",en:"Top 3 pain points today",t:"textarea",star:1},
+   {id:"curSys",q:"目前在用的系统 / 工具（可多选）",en:"Current systems / tools",t:"checks",other:1,opts:[["手工 Excel","Excel"],["QuickBooks","QuickBooks"],["NetSuite","NetSuite"],["自研系统","In-house"],["只靠邮件 + 电话","Email/Phone only"],["其他","Other"]]},
+   {id:"pains",q:"目前最头疼的问题（可多选）",en:"Top pain points",t:"checks",other:1,star:1,opts:[["报价慢 / 容易算错","Slow/error quotes"],["库存看不准","Inaccurate stock"],["对账乱、返点算不清","Messy reconciliation"],["应收催收难","Hard to collect"],["订单进度不透明","No order visibility"],["数据散在各处 Excel","Scattered data"],["经销商重复问问题","Repetitive dealer Qs"],["其他","Other"]]},
  ]},
  {t:"业务规模", en:"Business Scale", fields:[
-   {id:"dealers",q:"经销商（Dealer）数量",en:"Number of dealers",t:"text",star:1},
-   {id:"warehouses",q:"仓库数量及大致位置",en:"# of warehouses & locations",t:"text",star:1},
-   {id:"instock",q:"现货发货比例（约 %）",en:"In-stock ship rate (approx %)",t:"text"},
-   {id:"factory",q:"工厂 / 产品线",en:"Factory / product lines",t:"checks",opts:[["美式（越南厂）","US-style (Vietnam)"],["欧式（达拉斯）","Euro-style (Dallas)"],["不锈钢","Stainless"],["其他","Other"]]},
-   {id:"skus",q:"在管 SKU 数量（约）",en:"Approx. # of SKUs",t:"text"},
-   {id:"orders",q:"月均订单量（约）",en:"Approx. monthly orders",t:"text"},
+   {id:"dealers",q:"经销商（Dealer）数量",en:"# of dealers",t:"radio",other:1,star:1,opts:[["少于 20","<20"],["20–50","20–50"],["50–100","50–100"],["100 以上","100+"],["其他","Other"]]},
+   {id:"warehouses",q:"仓库数量",en:"# of warehouses",t:"radio",other:1,star:1,opts:[["1 个","1"],["2–3 个","2–3"],["4–6 个","4–6"],["6 个以上","6+"],["其他","Other"]]},
+   {id:"instock",q:"现货发货比例（约）",en:"In-stock ship rate",t:"radio",other:1,opts:[["少于 50%","<50%"],["50–80%","50–80%"],["80–95%","80–95%"],["95% 以上","95%+"],["不确定","Not sure"],["其他","Other"]]},
+   {id:"factory",q:"工厂 / 产品线（可多选）",en:"Factory / product lines",t:"checks",other:1,opts:[["美式（越南厂）","US (Vietnam)"],["欧式（达拉斯）","Euro (Dallas)"],["不锈钢","Stainless"],["其他","Other"]]},
+   {id:"skus",q:"在管 SKU 数量（约）",en:"# of SKUs",t:"radio",other:1,opts:[["少于 500","<500"],["500–2000","500–2000"],["2000–5000","2000–5000"],["5000 以上","5000+"],["不确定","Not sure"],["其他","Other"]]},
+   {id:"orders",q:"月均订单量（约）",en:"Monthly orders",t:"radio",other:1,opts:[["少于 100","<100"],["100–500","100–500"],["500–2000","500–2000"],["2000 以上","2000+"],["不确定","Not sure"],["其他","Other"]]},
  ]},
- {t:"报价台（单元柜）", en:"Quoting (Unit Cabinet) — Kitty 明确要", fields:[
-   {id:"quoteNow",q:"现在你们怎么给经销商报价？",en:"How do you quote dealers today?",t:"textarea",star:1},
-   {id:"quoteUnit",q:"报价的计价单位",en:"You quote by",t:"radio",opts:[["按单元柜(BC/SB/B/W/T)","Per unit cabinet"],["整套方案","Full package"],["线性尺寸","Linear ft"],["其他","Other"]],star:1},
-   {id:"cabTypes",q:"在用的单元柜种类（如 Base/Wall/Tall/Sink Base…）",en:"Cabinet unit types in use",t:"textarea"},
-   {id:"stockMatch",q:"是否需要「6 仓现货实时匹配」（报价时自动看哪个仓有货）？",en:"Need real-time multi-warehouse stock match in quotes?",t:"radio",opts:[["需要","Need it"],["不需要","No"],["想了解","Tell me more"]],star:1},
-   {id:"tierPrice",q:"价格是否按经销商等级分层？",en:"Tiered pricing by dealer level?",t:"radio",opts:[["是","Yes"],["否","No"],["计划做","Planned"]]},
-   {id:"quoteApprove",q:"报价审批 / 改价的流程是怎样的？",en:"Quote approval / price-change flow",t:"textarea"},
+ {t:"报价台（单元柜）", en:"Quoting — Kitty 明确要", fields:[
+   {id:"quoteNow",q:"现在怎么给经销商报价？（可多选）",en:"How do you quote today?",t:"checks",other:1,star:1,opts:[["线下 Excel 手算","Manual Excel"],["照厂家价目表","Vendor price list"],["现有系统出价","Existing system"],["销售各自报价","Each rep"],["其他","Other"]]},
+   {id:"quoteUnit",q:"报价的计价单位",en:"Quote by",t:"radio",other:1,star:1,opts:[["按单元柜 (BC/SB/B/W/T)","Per unit cabinet"],["整套方案","Full package"],["按线性尺寸","Linear ft"],["其他","Other"]]},
+   {id:"cabTypes",q:"在用的单元柜种类（可多选）",en:"Cabinet types in use",t:"checks",other:1,opts:[["Base 底柜","Base"],["Wall 吊柜","Wall"],["Tall 高柜","Tall"],["Sink Base 水槽柜","Sink Base"],["Vanity 浴室柜","Vanity"],["Island 中岛","Island"],["配件 Accessories","Accessories"],["其他","Other"]]},
+   {id:"stockMatch",q:"是否需要「多仓现货实时匹配」（报价时自动看哪个仓有货）？",en:"Real-time multi-warehouse stock match?",t:"radio",other:1,star:1,opts:[["需要","Need it"],["不需要","No"],["想了解","Tell me more"],["其他","Other"]]},
+   {id:"tierPrice",q:"价格是否按经销商等级分层？",en:"Tiered pricing by dealer level?",t:"radio",other:1,opts:[["是","Yes"],["否","No"],["计划做","Planned"],["其他","Other"]]},
+   {id:"quoteApprove",q:"报价 / 改价的审批方式（可多选）",en:"Quote approval",t:"checks",other:1,opts:[["销售可直接报、无需审批","No approval"],["需经理审批","Manager"],["需财务审批","Finance"],["系统按规则自动","System rule"],["其他","Other"]]},
  ]},
- {t:"经销商结算 + 返点", en:"Dealer Settlement & Referral — 第一需求", fields:[
-   {id:"tiers",q:"经销商分几个等级 / 层级？",en:"How many dealer tiers?",t:"text",star:1},
-   {id:"rates",q:"各等级的返点 / 折扣比例（如 T1 5%、T2 3%）",en:"Referral / discount rate per tier",t:"textarea",star:1},
-   {id:"subTier",q:"有没有二级推荐返点（Sub-Tier / 推荐分成）？",en:"Sub-tier / referral commission?",t:"radio",opts:[["有","Yes"],["无","No"],["计划做","Planned"]],star:1},
-   {id:"subTierDetail",q:"若有，请说明规则（谁推荐谁、分几层、各几个点）",en:"If yes, describe the rule",t:"textarea"},
-   {id:"cycle",q:"结算 / 对账周期",en:"Settlement cycle",t:"radio",opts:[["按单","Per order"],["按周","Weekly"],["按月","Monthly"],["按季","Quarterly"],["其他","Other"]]},
-   {id:"reconNow",q:"现在和经销商怎么对账？",en:"How do you reconcile with dealers now?",t:"textarea"},
-   {id:"settlePain",q:"结算 / 返点上最大的痛点",en:"Biggest settlement / referral pain",t:"textarea"},
+ {t:"经销商结算 + 返点", en:"Settlement & Referral — 第一需求", fields:[
+   {id:"tiers",q:"经销商分几个等级 / 层级？",en:"# of dealer tiers",t:"radio",other:1,star:1,opts:[["1 层（统一价）","1"],["2 层","2"],["3 层","3"],["4 层以上","4+"],["其他","Other"]]},
+   {id:"rateType",q:"返点 / 折扣的形式（可多选）",en:"Referral / discount structure",t:"checks",other:1,star:1,opts:[["固定折扣","Fixed discount"],["按量阶梯返点","Volume tiers"],["推荐返点（谁带谁）","Referral commission"],["季度 / 年度返利","Periodic rebate"],["其他","Other"]]},
+   {id:"rates",q:"大致返点比例 — 可直接填（如 T1 5%、T2 3%）",en:"Approx rates (free text)",t:"text"},
+   {id:"subTier",q:"有没有二级推荐返点（Sub-Tier / 推荐分成）？",en:"Sub-tier referral?",t:"radio",other:1,star:1,opts:[["有","Yes"],["无","No"],["计划做","Planned"],["其他","Other"]]},
+   {id:"cycle",q:"结算 / 对账周期",en:"Settlement cycle",t:"radio",other:1,opts:[["按单","Per order"],["按周","Weekly"],["按月","Monthly"],["按季","Quarterly"],["其他","Other"]]},
+   {id:"reconNow",q:"现在和经销商怎么对账？（可多选）",en:"Current reconciliation",t:"checks",other:1,opts:[["人工 Excel 核对","Manual Excel"],["月底出对账单","Monthly statement"],["系统自动","Automated"],["基本不对账","Barely"],["其他","Other"]]},
+   {id:"settlePain",q:"结算 / 返点最大的痛点（可多选）",en:"Biggest settlement pain",t:"checks",other:1,opts:[["返点算不清","Hard to calc"],["对账太慢","Slow recon"],["经销商常有异议","Dealer disputes"],["数据太散","Scattered"],["没法实时看","No real-time"],["其他","Other"]]},
  ]},
  {t:"合同 / 协议 + 应收", en:"Contracts & Receivables", fields:[
-   {id:"agreement",q:"经销协议的主要条款（返货 / 价保 / 区域 / 最低进货…）",en:"Dealer agreement key terms",t:"textarea"},
-   {id:"terms",q:"账期",en:"Payment terms",t:"checks",opts:[["预付","Prepay"],["货到付款","COD"],["Net 30","Net 30"],["Net 60","Net 60"],["其他","Other"]]},
-   {id:"credit",q:"是否给经销商设信用额度？",en:"Credit limit per dealer?",t:"radio",opts:[["是","Yes"],["否","No"]]},
-   {id:"poFlow",q:"逐单下单（PO）的流程",en:"Per-order PO process",t:"textarea"},
-   {id:"collect",q:"逾期 / 欠款现在怎么催收？",en:"How do you collect overdue?",t:"textarea"},
+   {id:"agreement",q:"经销协议主要条款（可多选）",en:"Dealer agreement terms",t:"checks",other:1,opts:[["返货政策","Return policy"],["价格保护","Price protection"],["区域保护","Territory"],["最低进货量","Min purchase"],["独家代理","Exclusivity"],["其他","Other"]]},
+   {id:"terms",q:"账期（可多选）",en:"Payment terms",t:"checks",other:1,opts:[["预付","Prepay"],["货到付款","COD"],["Net 30","Net 30"],["Net 60","Net 60"],["其他","Other"]]},
+   {id:"credit",q:"是否给经销商设信用额度？",en:"Credit limit per dealer?",t:"radio",other:1,opts:[["是","Yes"],["否","No"],["部分经销商","Some"],["其他","Other"]]},
+   {id:"poFlow",q:"经销商逐单下单（PO）的方式（可多选）",en:"Per-order PO method",t:"checks",other:1,opts:[["邮件","Email"],["电话 / 微信","Phone/WeChat"],["在线表单","Online form"],["现有系统","System"],["其他","Other"]]},
+   {id:"collect",q:"逾期 / 欠款怎么催收？（可多选）",en:"How you collect overdue",t:"checks",other:1,opts:[["电话催","Call"],["邮件催","Email"],["暂停发货","Hold shipments"],["扣返点","Deduct referral"],["交财务 / 法务","Finance/Legal"],["其他","Other"]]},
  ]},
  {t:"订单履约流程", en:"Order Fulfillment", fields:[
-   {id:"flow",q:"从经销商下单到签收，完整有哪些步骤？",en:"Order-to-delivery — list the steps",t:"textarea",star:1},
-   {id:"owners",q:"每一步分别由谁 / 哪个岗位负责？",en:"Who owns each step?",t:"textarea"},
-   {id:"allocRule",q:"由哪个仓发货怎么决定（就近 / 库存优先 / 指定）？",en:"Warehouse allocation rule",t:"textarea"},
-   {id:"returns",q:"退换货的流程",en:"Returns / exchanges process",t:"textarea"},
-   {id:"replenish",q:"缺货 / 补货怎么处理？",en:"Out-of-stock / replenishment",t:"textarea"},
+   {id:"flow",q:"从下单到签收，包含哪些环节？（可多选）",en:"Order-to-delivery steps",t:"checks",other:1,star:1,opts:[["接单 / 录单","Order intake"],["审核","Review"],["仓库匹配 / 分仓","Warehouse alloc"],["拣货打包","Pick & pack"],["发货","Ship"],["物流跟踪","Track"],["签收确认","Delivery confirm"],["其他","Other"]]},
+   {id:"allocRule",q:"由哪个仓发货怎么决定？",en:"Warehouse allocation rule",t:"radio",other:1,opts:[["就近仓优先","Nearest"],["库存最多的仓","Most stock"],["指定仓","Assigned"],["系统自动","Auto"],["其他","Other"]]},
+   {id:"returns",q:"退换货情况",en:"Returns / exchanges",t:"radio",other:1,opts:[["有标准退换流程","Standard process"],["个案处理","Case by case"],["很少退换","Rare"],["其他","Other"]]},
+   {id:"replenish",q:"缺货 / 补货怎么处理？（可多选）",en:"Out-of-stock / replenishment",t:"checks",other:1,opts:[["定期补货","Scheduled"],["按库存阈值","Threshold"],["按销售预测","Forecast"],["手动判断","Manual"],["其他","Other"]]},
  ]},
  {t:"经销商自助门户", en:"Dealer Self-Service Portal", fields:[
-   {id:"selfServe",q:"希望经销商能自助做哪些事？",en:"What should dealers self-serve?",t:"checks",opts:[["下单","Place orders"],["查现货库存","Check stock"],["查订单状态","Track orders"],["查对账单","Statements"],["查返点收益","Referral earnings"],["下载发票","Invoices"],["其他","Other"]]},
-   {id:"portalNo",q:"哪些数据经销商「绝对不能看到」？（权限边界）",en:"What data must dealers NOT see?",t:"textarea",star:1},
-   {id:"orderNow",q:"经销商现在是怎么下单的？",en:"How do dealers place orders today?",t:"text"},
+   {id:"selfServe",q:"希望经销商能自助做哪些事？（可多选）",en:"What should dealers self-serve?",t:"checks",other:1,opts:[["下单","Order"],["查现货库存","Check stock"],["查订单状态","Track orders"],["查对账单","Statements"],["查返点收益","Referral earnings"],["下载发票","Invoices"],["其他","Other"]]},
+   {id:"portalNo",q:"哪些数据经销商「绝对不能看到」？（可多选）",en:"Data dealers must NOT see",t:"checks",other:1,star:1,opts:[["成本价","Cost price"],["其他经销商的数据","Other dealers' data"],["总库存","Total inventory"],["利润","Margins"],["内部备注","Internal notes"],["其他","Other"]]},
+   {id:"orderNow",q:"经销商现在怎么下单？",en:"How dealers order now",t:"radio",other:1,opts:[["邮件","Email"],["电话 / 微信","Phone/WeChat"],["在线门户","Online portal"],["销售代下","Via sales rep"],["其他","Other"]]},
  ]},
  {t:"数据现状 & 系统集成", en:"Data & Integration", fields:[
-   {id:"dataWhere",q:"目前业务数据主要存在哪里？",en:"Where does your data live now?",t:"checks",opts:[["Excel 表格","Excel files"],["会计软件","Accounting SW"],["WMS / 库存系统","WMS"],["邮件 / 纸质","Email/Paper"],["其他","Other"]]},
-   {id:"exportFields",q:"现在能导出哪些字段？（合同 / 订单 / 库存 / 收款）",en:"What fields can you export today?",t:"textarea"},
-   {id:"integrate",q:"需要和哪些系统打通？（会计 / 物流 / 电商平台…）",en:"Integrations needed",t:"textarea"},
-   {id:"avoidErp",q:"是否希望避免重型 ERP（如 Oracle / SAP）？",en:"Prefer to avoid heavy ERP?",t:"radio",opts:[["是，要轻量","Yes, keep light"],["无所谓","No preference"],["已有 ERP 需对接","Have ERP, integrate"]]},
+   {id:"dataWhere",q:"业务数据现在主要存在哪里？（可多选）",en:"Where data lives now",t:"checks",other:1,opts:[["Excel 表格","Excel"],["会计软件","Accounting SW"],["WMS / 库存系统","WMS"],["邮件 / 纸质","Email/Paper"],["其他","Other"]]},
+   {id:"exportFields",q:"现在能导出哪些数据？（可多选）",en:"What you can export today",t:"checks",other:1,opts:[["合同","Contracts"],["订单","Orders"],["库存","Inventory"],["收款","Payments"],["经销商资料","Dealer info"],["发票","Invoices"],["都能导","All"],["其他","Other"]]},
+   {id:"integrate",q:"需要和哪些系统打通？（可多选）",en:"Integrations needed",t:"checks",other:1,opts:[["会计软件","Accounting"],["物流 / 运输","Logistics"],["电商平台","E-commerce"],["银行 / 支付","Bank/Payment"],["暂不需要","None for now"],["其他","Other"]]},
+   {id:"avoidErp",q:"是否希望避免重型 ERP（如 Oracle / SAP）？",en:"Avoid heavy ERP?",t:"radio",other:1,opts:[["是，要轻量","Yes, keep light"],["无所谓","No preference"],["已有 ERP 需对接","Have ERP, integrate"],["其他","Other"]]},
  ]},
  {t:"AI 助理期望", en:"AI Assistant", fields:[
-   {id:"ai",q:"最想要哪些 AI 自动化？",en:"Which AI automations do you want?",t:"checks",opts:[["催收话术","Dunning msgs"],["客服问答","Customer Q&A"],["补货建议","Replenishment"],["报价生成","Quote drafting"],["对账核对","Reconciliation"],["其他","Other"]]},
+   {id:"ai",q:"最想要哪些 AI 自动化？（可多选）",en:"Desired AI automations",t:"checks",other:1,opts:[["催收话术","Dunning msgs"],["客服问答","Customer Q&A"],["补货建议","Replenishment"],["报价生成","Quote drafting"],["对账核对","Reconciliation"],["暂不需要","None"],["其他","Other"]]},
  ]},
  {t:"优先级 / 时间 / 预算", en:"Priority, Timeline & Budget", fields:[
-   {id:"priority",q:"最想「先上线」哪 1–2 块？",en:"Top 1–2 modules to start with",t:"checks",opts:[["报价台","Quoting"],["结算 + 返点","Settlement"],["合同 + 应收","Contracts & AR"],["订单履约","Fulfillment"],["经销商门户","Dealer portal"],["数据中台","Data hub"],["AI 助理","AI assistant"]],star:1},
-   {id:"timeline",q:"期望多久看到第一版成果？",en:"Desired timeline for v1",t:"text"},
-   {id:"budget",q:"预算意向（可选）",en:"Budget range (optional)",t:"text"},
-   {id:"notes",q:"其他想补充的",en:"Anything else?",t:"textarea"},
+   {id:"priority",q:"最想「先上线」哪 1–2 块？（可多选）",en:"Top 1–2 to start with",t:"checks",other:1,star:1,opts:[["报价台","Quoting"],["结算 + 返点","Settlement"],["合同 + 应收","Contracts & AR"],["订单履约","Fulfillment"],["经销商门户","Dealer portal"],["数据中台","Data hub"],["AI 助理","AI assistant"],["其他","Other"]]},
+   {id:"timeline",q:"期望多久看到第一版成果？",en:"Desired timeline for v1",t:"radio",other:1,opts:[["1 个月内","<1 mo"],["1–3 个月","1–3 mo"],["3–6 个月","3–6 mo"],["6 个月以上","6+ mo"],["还没定","TBD"],["其他","Other"]]},
+   {id:"budget",q:"预算意向（可选）",en:"Budget range (optional)",t:"radio",other:1,opts:[["少于 $20k","<$20k"],["$20–50k","$20–50k"],["$50–100k","$50–100k"],["$100k 以上","$100k+"],["待定","TBD"],["其他","Other"]]},
+   {id:"notes",q:"其他想补充的（自由填写）",en:"Anything else? (free text)",t:"textarea"},
  ]},
 ];
 
 /* ===================== 状态 & 渲染 ===================== */
-const KEY="foa_req_v1";
+const KEY="foa_req_v2";
 let state=JSON.parse(localStorage.getItem(KEY)||"{}");
 if(!state.date){const d=new Date();state.date=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 
 function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function jsStr(s){return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'");}
 
 function fieldHtml(f){
   const star=f.star?'<span class="star">★</span>':'';
@@ -178,7 +177,9 @@ function fieldHtml(f){
   else if(f.t==="textarea") inner=`<textarea oninput="setV('${f.id}',this.value)">${esc(state[f.id]||"")}</textarea>`;
   else if(f.t==="radio"||f.t==="checks"){
     const multi=f.t==="checks";
-    inner=`<div class="chips">`+f.opts.map(o=>`<span class="chip" data-chip="${f.id}" data-val="${esc(o[0])}" onclick="pick('${f.id}','${esc(o[0]).replace(/'/g,"\\'")}',${multi})">${esc(o[0])}<span class="e">${esc(o[1])}</span></span>`).join("")+`</div>`;
+    const chips=`<div class="chips">`+f.opts.map(o=>`<span class="chip" data-chip="${f.id}" data-val="${esc(o[0])}" onclick="pick('${f.id}','${jsStr(o[0])}',${multi})">${esc(o[0])}<span class="e">${esc(o[1])}</span></span>`).join("")+`</div>`;
+    const ob=f.other?`<div class="otherbox" id="ob_${f.id}" style="display:none"><input type="text" value="${esc(state[f.id+'_o']||"")}" oninput="setV('${f.id}_o',this.value)" placeholder="请填写其他…  /  Please specify"></div>`:"";
+    inner=chips+ob;
   }
   return `<div class="fld"><div class="q">${esc(f.q)}${star} <span class="en">${esc(f.en)}</span></div>${inner}</div>`;
 }
@@ -199,6 +200,8 @@ function render(){
 }
 function toggleSec(si){document.getElementById("sec"+si).classList.toggle("col");}
 function setV(id,v){state[id]=v;save();}
+function fieldById(id){for(const s of FORM)for(const f of s.fields)if(f.id===id)return f;return null;}
+function otherSel(id){const v=state[id];return Array.isArray(v)?v.indexOf("其他")>=0:v==="其他";}
 function pick(id,val,multi){
   if(multi){let a=Array.isArray(state[id])?state[id]:[];const i=a.indexOf(val);if(i>=0)a.splice(i,1);else a.push(val);state[id]=a;}
   else{state[id]=state[id]===val?"":val;}
@@ -206,14 +209,15 @@ function pick(id,val,multi){
 }
 function renderChips(id){
   document.querySelectorAll('[data-chip="'+id+'"]').forEach(el=>{
-    const v=state[id];const on=Array.isArray(v)?v.includes(el.dataset.val):v===el.dataset.val;
+    const v=state[id];const on=Array.isArray(v)?v.indexOf(el.dataset.val)>=0:v===el.dataset.val;
     el.classList.toggle("on",on);
   });
+  const ob=document.getElementById("ob_"+id);
+  if(ob)ob.style.display=otherSel(id)?"block":"none";
 }
-let saveTimer;
 function save(){
   localStorage.setItem(KEY,JSON.stringify(state));
-  const ind=document.getElementById("saveInd");ind.textContent="✓ 已自动保存";ind.style.opacity="1";
+  const ind=document.getElementById("saveInd");if(ind){ind.textContent="✓ 已自动保存";ind.style.opacity="1";}
   updateProgress();
 }
 function filled(v){return Array.isArray(v)?v.length>0:(v!=null&&String(v).trim()!=="");}
@@ -232,7 +236,20 @@ function clearAll(){
 }
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1900);}
 
-/* ===================== 导出行数据 ===================== */
+/* ===================== 取值 & 导出 ===================== */
+function answerOf(f){
+  let v=state[f.id];
+  if(f.t==="checks"){
+    let arr=Array.isArray(v)?v.slice():[];
+    if(f.other&&arr.indexOf("其他")>=0){const o=state[f.id+"_o"];arr=arr.map(x=>x==="其他"?("其他："+(o||"")):x);}
+    return arr.join("; ");
+  }
+  if(f.t==="radio"){
+    if(f.other&&v==="其他")return "其他："+(state[f.id+"_o"]||"");
+    return v||"";
+  }
+  return v==null?"":String(v);
+}
 function buildRows(){
   const now=new Date();
   const ts=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0")+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
@@ -242,12 +259,7 @@ function buildRows(){
   rows.push(["填表人 Filled by",String(state.name||"")]);
   rows.push([]);
   rows.push(["模块 Section","问题 Question","回答 Answer"]);
-  FORM.forEach(sec=>{
-    sec.fields.forEach(f=>{
-      let v=state[f.id];if(Array.isArray(v))v=v.join("; ");v=v==null?"":String(v);
-      rows.push([sec.t+" / "+sec.en, f.q+"  ("+f.en+")", v]);
-    });
-  });
+  FORM.forEach(sec=>{sec.fields.forEach(f=>{rows.push([sec.t+" / "+sec.en, f.q+"  ("+f.en+")", answerOf(f)]);});});
   return rows;
 }
 function fname(ext){
@@ -255,81 +267,42 @@ function fname(ext){
   const who=(state.company||state.name||"FOA").replace(/[^\w一-龥]/g,"");
   return "FOA需求收集_"+who+"_"+d+"."+ext;
 }
-
-/* ---------- CSV 导出（带 BOM，Excel 可直接打开） ---------- */
 function exportCsv(){
   const rows=buildRows();
   const csv=rows.map(r=>r.map(c=>{c=String(c==null?"":c);return /[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c;}).join(",")).join("\r\n");
-  const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"});
-  dl(blob,fname("csv"));toast("已导出 CSV，请发回给我们");
+  dl(new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"}),fname("csv"));toast("已导出 CSV，请发回给我们");
 }
-
-/* ---------- XLSX 导出（自建 ZIP-STORE + inlineStr，真正 .xlsx） ---------- */
+/* ---------- XLSX：自建 ZIP-STORE + inlineStr（真正 .xlsx） ---------- */
 const CRC=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0;}return t;})();
 function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRC[(c^u8[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
 function colName(n){let s="";n++;while(n>0){let m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-m-1)/26);}return s;}
 function sheetXml(rows){
   let body="";
-  rows.forEach((row,ri)=>{
-    let cells="";
-    row.forEach((val,ci)=>{
-      const ref=colName(ci)+(ri+1);
-      cells+=`<c r="${ref}" t="inlineStr"><is><t xml:space="preserve">${esc(val)}</t></is></c>`;
-    });
-    body+=`<row r="${ri+1}">${cells}</row>`;
-  });
-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
-    `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">`+
-    `<cols><col min="1" max="1" width="26"/><col min="2" max="2" width="52"/><col min="3" max="3" width="60"/></cols>`+
-    `<sheetData>${body}</sheetData></worksheet>`;
+  rows.forEach((row,ri)=>{let cells="";row.forEach((val,ci)=>{const ref=colName(ci)+(ri+1);cells+=`<c r="${ref}" t="inlineStr"><is><t xml:space="preserve">${esc(val)}</t></is></c>`;});body+=`<row r="${ri+1}">${cells}</row>`;});
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><cols><col min="1" max="1" width="26"/><col min="2" max="2" width="54"/><col min="3" max="3" width="60"/></cols><sheetData>${body}</sheetData></worksheet>`;
 }
 function zipStore(files){
   const enc=new TextEncoder();let parts=[],offset=0,central=[];
   const u16=n=>[n&255,(n>>8)&255];const u32=n=>[n&255,(n>>8)&255,(n>>16)&255,(n>>24)&255];
-  files.forEach(f=>{
-    const nb=enc.encode(f.name);const data=f.data;const crc=crc32(data);const sz=data.length;
-    const local=[0x50,0x4b,0x03,0x04].concat(u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nb.length),u16(0));
-    parts.push(new Uint8Array(local));parts.push(nb);parts.push(data);
-    central.push({nb,crc,sz,offset});
-    offset+=local.length+nb.length+sz;
-  });
-  const cdStart=offset;let cdLen=0;
-  central.forEach(c=>{
-    const h=[0x50,0x4b,0x01,0x02].concat(u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(c.crc),u32(c.sz),u32(c.sz),u16(c.nb.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(c.offset));
-    parts.push(new Uint8Array(h));parts.push(c.nb);cdLen+=h.length+c.nb.length;
-  });
-  const eocd=[0x50,0x4b,0x05,0x06].concat(u16(0),u16(0),u16(central.length),u16(central.length),u32(cdLen),u32(cdStart),u16(0));
-  parts.push(new Uint8Array(eocd));
-  let total=parts.reduce((a,p)=>a+p.length,0),out=new Uint8Array(total),p=0;
-  parts.forEach(x=>{out.set(x,p);p+=x.length;});
-  return out;
+  files.forEach(f=>{const nb=enc.encode(f.name);const data=f.data;const crc=crc32(data);const sz=data.length;const local=[0x50,0x4b,0x03,0x04].concat(u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nb.length),u16(0));parts.push(new Uint8Array(local));parts.push(nb);parts.push(data);central.push({nb,crc,sz,offset});offset+=local.length+nb.length+sz;});
+  const cdStart=offset;let cdLen=0;central.forEach(c=>{const h=[0x50,0x4b,0x01,0x02].concat(u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(c.crc),u32(c.sz),u32(c.sz),u16(c.nb.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(c.offset));parts.push(new Uint8Array(h));parts.push(c.nb);cdLen+=h.length+c.nb.length;});
+  const eocd=[0x50,0x4b,0x05,0x06].concat(u16(0),u16(0),u16(central.length),u16(central.length),u32(cdLen),u32(cdStart),u16(0));parts.push(new Uint8Array(eocd));
+  let total=parts.reduce((a,p)=>a+p.length,0),out=new Uint8Array(total),p=0;parts.forEach(x=>{out.set(x,p);p+=x.length;});return out;
 }
 function exportXlsx(){
   try{
-    const enc=new TextEncoder();
-    const rows=buildRows();
+    const enc=new TextEncoder();const rows=buildRows();
     const CT=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>`;
     const RELS=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
     const WB=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="FOA需求 Requirements" sheetId="1" r:id="rId1"/></sheets></workbook>`;
     const WBR=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`;
     const SH=sheetXml(rows);
-    const files=[
-      {name:"[Content_Types].xml",data:enc.encode(CT)},
-      {name:"_rels/.rels",data:enc.encode(RELS)},
-      {name:"xl/workbook.xml",data:enc.encode(WB)},
-      {name:"xl/_rels/workbook.xml.rels",data:enc.encode(WBR)},
-      {name:"xl/worksheets/sheet1.xml",data:enc.encode(SH)},
-    ];
+    const files=[{name:"[Content_Types].xml",data:enc.encode(CT)},{name:"_rels/.rels",data:enc.encode(RELS)},{name:"xl/workbook.xml",data:enc.encode(WB)},{name:"xl/_rels/workbook.xml.rels",data:enc.encode(WBR)},{name:"xl/worksheets/sheet1.xml",data:enc.encode(SH)}];
     const bytes=zipStore(files);
-    const blob=new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-    dl(blob,fname("xlsx"));toast("已导出 Excel，请发回给我们");
+    dl(new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}),fname("xlsx"));toast("已导出 Excel，请发回给我们");
   }catch(e){alert("导出失败，请改用 CSV 按钮。\n"+e);}
 }
-function dl(blob,name){
-  const a=document.createElement("a");const url=URL.createObjectURL(blob);
-  a.href=url;a.download=name;document.body.appendChild(a);a.click();
-  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},800);
-}
+function dl(blob,name){const a=document.createElement("a");const url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},800);}
 
 render();
 </script>
