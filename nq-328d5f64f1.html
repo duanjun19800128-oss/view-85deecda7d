@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-store">
+<title>方便面连锁 · 数字化需求收集表 / Noodle Franchise Requirements</title>
+<style>
+  :root{
+    --brand:#b23a2e; --brand2:#cf5a3c; --accent:#e0922b; --gold:#c9851f;
+    --bg:#f6f1ec; --panel:#ffffff; --ink:#241a16; --sub:#6e6157; --line:#e7ddd2;
+    --on:#b23a2e; --shadow:0 1px 3px rgba(60,30,20,.07),0 6px 20px rgba(60,30,20,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Segoe UI","Microsoft YaHei",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .top{position:sticky;top:0;z-index:30;background:linear-gradient(135deg,#b23a2e,#cf5a3c);color:#fff;padding:13px 16px;box-shadow:0 2px 10px rgba(60,30,20,.18)}
+  .top .ttl{font-size:16px;font-weight:800;letter-spacing:.3px}
+  .top .sub{font-size:11.5px;opacity:.88;margin-top:2px}
+  .bar{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .prog{flex:1;height:7px;background:rgba(255,255,255,.25);border-radius:5px;overflow:hidden}
+  .prog i{display:block;height:100%;background:#ffd79a;width:0;transition:.3s}
+  .pct{font-size:11.5px;font-weight:700;white-space:nowrap;min-width:74px;text-align:right}
+  .wrap{max-width:860px;margin:0 auto;padding:14px 14px 120px}
+  .intro{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:13px 15px;box-shadow:var(--shadow);margin-bottom:16px;font-size:12.8px;color:var(--sub);line-height:1.7}
+  .intro b{color:var(--ink)}
+  .sec{background:var(--panel);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+  .sec>.hd{background:#f8f1ea;border-bottom:1px solid var(--line);padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px}
+  .sec>.hd .ix{width:25px;height:25px;flex:none;border-radius:7px;background:var(--brand);color:#fff;font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .sec>.hd .nm{font-size:14.5px;font-weight:800}
+  .sec>.hd .nm small{display:block;font-size:10.5px;font-weight:500;color:var(--sub);margin-top:1px}
+  .sec>.hd .cv{margin-left:auto;font-size:11px;color:var(--sub)}
+  .sec>.hd .ar{margin-left:8px;color:var(--sub);transition:.2s}
+  .sec.col .ar{transform:rotate(-90deg)}
+  .sec.col .bd{display:none}
+  .bd{padding:6px 16px 16px}
+  .fld{padding:13px 0;border-bottom:1px dashed var(--line)}
+  .fld:last-child{border:none}
+  .q{font-size:13px;font-weight:700;margin-bottom:3px}
+  .q .en{font-weight:500;color:var(--sub);font-size:11.5px}
+  .q .star{color:var(--gold);margin-left:3px}
+  input[type=text],textarea,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:inherit;color:var(--ink);background:#fdfbf8}
+  input[type=text]:focus,textarea:focus,select:focus{outline:none;border-color:var(--brand2);box-shadow:0 0 0 3px rgba(207,90,60,.12)}
+  textarea{min-height:60px;resize:vertical;line-height:1.6}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .chip{font-size:12.5px;padding:7px 13px;border-radius:20px;border:1px solid var(--line);background:#fdfbf8;cursor:pointer;color:var(--ink);user-select:none;transition:.12s}
+  .chip:hover{border-color:var(--brand2)}
+  .chip.on{background:var(--on);color:#fff;border-color:var(--on);font-weight:600}
+  .chip .e{opacity:.7;font-size:11px;margin-left:3px}
+  .otherbox{margin-top:9px}
+  .otherbox input{border-style:dashed;border-color:var(--gold);background:#fffaf0}
+  .actions{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:10px 14px;display:flex;gap:9px;align-items:center;box-shadow:0 -3px 14px rgba(60,30,20,.07)}
+  .actions .save-ind{font-size:11px;color:var(--accent);white-space:nowrap}
+  .btn{flex:1;border:none;border-radius:10px;padding:12px 10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px}
+  .btn.x{background:var(--accent);color:#fff}
+  .btn.x:active{filter:brightness(.94)}
+  .btn.g{background:#f3ece4;color:var(--brand);border:1px solid var(--line)}
+  .btn.sm{flex:none;padding:12px 13px}
+  .foot{max-width:860px;margin:0 auto;padding:4px 16px 0;font-size:11px;color:var(--sub);line-height:1.7}
+  .toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%) translateY(20px);background:#241a16;color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;opacity:0;transition:.3s;z-index:60;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media(max-width:560px){.top .ttl{font-size:14.5px}.wrap{padding:12px 10px 120px}.bd{padding:4px 13px 14px}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="ttl">🍜 方便面连锁 · 数字化需求收集表</div>
+  <div class="sub">Noodle Franchise — Digitalization Requirements Intake　|　约 15 分钟 · 大多是选择题 · 可随时保存继续</div>
+  <div class="bar"><div class="prog"><i id="progbar"></i></div><div class="pct" id="pct">已填 0 / 0</div></div>
+</div>
+
+<div class="wrap">
+  <div class="intro">
+    👋 这份表帮我们摸清你这套连锁的实际运营和扩张需求，<b>大多是选择题，点一点就行；选项里没有的，选「其他」手动填</b>。<br>
+    🎯 填完后，我们会先<b>针对你最想先看的那块做一版 demo</b> 给你确认，方向对了再进入正式开发。<br>
+    🔒 <b>你填的内容只存在你这台设备上</b>，不会自动上传。填好后点底部「导出 Excel」，把文件发回给我即可。带 <span style="color:var(--gold)">★</span> 的是我们最想了解的重点项。
+  </div>
+  <div id="form"></div>
+  <div class="foot">本表仅用于方便面连锁数字化合作的需求收集 · 内容保密。</div>
+</div>
+
+<div class="actions">
+  <span class="save-ind" id="saveInd">✓ 已自动保存</span>
+  <button class="btn x" onclick="exportXlsx()">⬇︎ 导出 Excel</button>
+  <button class="btn g sm" onclick="exportCsv()">CSV</button>
+  <button class="btn g sm" onclick="clearAll()">清空</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== 表单定义（方便面连锁 · 尽量选择题 · 每题可选「其他」手填） ===================== */
+const FORM=[
+ {t:"基本信息", en:"Company & Contact", fields:[
+   {id:"brand",q:"品牌 / 公司名称",en:"Brand / Company",t:"text"},
+   {id:"name",q:"填表人",en:"Your name",t:"text",star:1},
+   {id:"role",q:"你的角色",en:"Your role",t:"radio",other:1,opts:[["创始人 / 老板","Founder/Owner"],["运营负责人","Ops lead"],["合伙人（供应链）","Partner (supply)"],["店长","Store mgr"],["财务","Finance"],["其他","Other"]]},
+   {id:"contact",q:"联系方式（邮箱 / 电话 / 微信）",en:"Contact",t:"text"},
+   {id:"date",q:"填表日期",en:"Date",t:"text"},
+   {id:"curTools",q:"现在用什么管店？（可多选）",en:"How do you run stores now?",t:"checks",other:1,opts:[["POS 收银机","POS"],["Excel","Excel"],["纸质 / 手记","Paper"],["微信群","WeChat group"],["外卖平台后台","Delivery app backend"],["其他","Other"]]},
+   {id:"pains",q:"现在最头疼的问题（可多选）",en:"Top pain points",t:"checks",other:1,star:1,opts:[["各店数据看不到","No store data view"],["库存 / 备货乱","Messy inventory"],["加盟商难管","Hard to manage franchisees"],["选址没把握","Site picking risky"],["对账 / 分润麻烦","Settlement hassle"],["人手不够","Short-staffed"],["标准化难统一","Hard to standardize"],["其他","Other"]]},
+ ]},
+ {t:"连锁概况与规模", en:"Chain Overview & Scale", fields:[
+   {id:"storeNow",q:"现有门店数",en:"Stores open now",t:"radio",other:1,star:1,opts:[["1 家","1"],["2–3 家","2–3"],["4–10 家","4–10"],["10 家以上","10+"],["筹备中","In prep"]]},
+   {id:"storePlan",q:"未来 1 年计划开几家？",en:"Stores planned (1 yr)",t:"radio",other:1,star:1,opts:[["1–2 家","1–2"],["3–5 家","3–5"],["6–10 家","6–10"],["10 家以上","10+"],["还没定","TBD"]]},
+   {id:"storeType",q:"门店类型（可多选）",en:"Store types",t:"checks",other:1,opts:[["街边店","Street"],["商场 / Mall 档口","Mall kiosk"],["写字楼","Office bldg"],["校园周边","Campus"],["外卖专门店","Delivery-only"],["其他","Other"]]},
+   {id:"area",q:"单店面积（约）",en:"Store size",t:"radio",other:1,opts:[["小于 200 sqft","<200"],["200–500 sqft","200–500"],["500–1000 sqft","500–1000"],["1000 sqft 以上","1000+"],["不一定","Varies"]]},
+   {id:"invest",q:"单店投资额（约）",en:"Per-store investment",t:"radio",other:1,opts:[["少于 15 万","<150k"],["15–30 万","150–300k"],["30–50 万","300–500k"],["50 万以上","500k+"],["其他","Other"]]},
+   {id:"dailySales",q:"单店日均流水（约）",en:"Daily sales / store",t:"radio",other:1,opts:[["少于 $1k","<$1k"],["$1–2k","$1–2k"],["$2–4k","$2–4k"],["$4k 以上","$4k+"],["不一定","Varies"]]},
+   {id:"products",q:"主营产品（可多选）",en:"Main products",t:"checks",other:1,opts:[["韩式方便面","Korean ramen"],["配料 / 浇头","Toppings"],["小食","Snacks"],["饮料","Drinks"],["周边 / 零售","Retail"],["其他","Other"]]},
+   {id:"region",q:"目前 / 计划区域（可多选）",en:"Region (now / planned)",t:"checks",other:1,opts:[["明尼苏达","Minnesota"],["美中","US Midwest"],["美西","US West"],["美东","US East"],["美南","US South"],["全美","Nationwide"],["其他","Other"]]},
+ ]},
+ {t:"加盟 / 连锁模式", en:"Franchise Model", fields:[
+   {id:"model",q:"经营模式（可多选）",en:"Operating model",t:"checks",other:1,star:1,opts:[["直营","Company-owned"],["加盟","Franchise"],["合伙 / 联营","Partnership"],["其他","Other"]]},
+   {id:"doFranchise",q:"是否要做加盟招商？",en:"Recruit franchisees?",t:"radio",other:1,star:1,opts:[["已在做","Doing it"],["计划做","Planned"],["暂不做","Not yet"],["其他","Other"]]},
+   {id:"feeStructure",q:"加盟收费结构（可多选）",en:"Franchise fee structure",t:"checks",other:1,opts:[["加盟费","Franchise fee"],["保证金","Deposit"],["设备费","Equipment"],["月度管理费","Monthly fee"],["按流水抽成","% of sales"],["供应链差价","Supply markup"],["其他","Other"]]},
+   {id:"royalty",q:"抽成 / 分润方式",en:"Royalty / profit share",t:"radio",other:1,opts:[["按流水百分比","% of sales"],["固定月费","Fixed monthly"],["供货差价","Supply margin"],["不抽成","None"],["其他","Other"]]},
+   {id:"franchiseeTarget",q:"加盟商数量目标（1–2 年）",en:"Franchisee target (1–2 yr)",t:"radio",other:1,opts:[["少于 10","<10"],["10–30","10–30"],["30–100","30–100"],["100 以上","100+"],["没定","TBD"]]},
+   {id:"franchiseeProfile",q:"理想加盟商画像（可多选）",en:"Ideal franchisee",t:"checks",other:1,opts:[["有餐饮经验","F&B experience"],["留学生 / 华人","Students/Chinese"],["本地美国人","Local American"],["投资人（不参与运营）","Passive investor"],["其他","Other"]]},
+   {id:"siteSupport",q:"是否给加盟商提供选址支持？",en:"Site support for franchisees?",t:"radio",other:1,opts:[["是","Yes"],["否","No"],["计划做","Planned"],["其他","Other"]]},
+ ]},
+ {t:"门店运营", en:"Store Operations", fields:[
+   {id:"pos",q:"现在怎么点单收银？",en:"How do you take orders / pay?",t:"radio",other:1,opts:[["POS 收银机","POS"],["平板 / iPad","Tablet"],["手机","Phone"],["纸质","Paper"],["其他","Other"]]},
+   {id:"channels",q:"销售渠道（可多选）",en:"Sales channels",t:"checks",other:1,opts:[["堂食","Dine-in"],["自提","Pickup"],["外卖平台","Delivery apps"],["自有线上点单","Own online order"],["其他","Other"]]},
+   {id:"delivery",q:"用哪些外卖平台？（可多选）",en:"Delivery platforms",t:"checks",other:1,opts:[["DoorDash","DoorDash"],["UberEats","UberEats"],["Grubhub","Grubhub"],["自有","Own"],["暂无","None"],["其他","Other"]]},
+   {id:"hours",q:"营业时长",en:"Operating hours",t:"radio",other:1,opts:[["少于 8 小时","<8h"],["8–12 小时","8–12h"],["12 小时以上","12h+"],["24 小时","24h"],["其他","Other"]]},
+   {id:"staff",q:"单店人员配置",en:"Staff per store",t:"radio",other:1,opts:[["1–2 人","1–2"],["3–5 人","3–5"],["5 人以上","5+"],["无人 / 自助","Self-service"],["其他","Other"]]},
+   {id:"sop",q:"是否有标准化 SOP（出餐 / 服务流程）？",en:"Standardized SOP?",t:"radio",other:1,opts:[["有完整 SOP","Full SOP"],["有部分","Partial"],["没有","None"],["其他","Other"]]},
+   {id:"equip",q:"方便面机 / 设备管理需求",en:"Noodle machine / equipment mgmt",t:"radio",other:1,opts:[["要监控设备状态","Monitor status"],["只记台账","Just a register"],["暂不需要","Not needed"],["其他","Other"]]},
+ ]},
+ {t:"供应链", en:"Supply Chain", fields:[
+   {id:"centralSupply",q:"是否中央采购 / 统一配送？",en:"Central sourcing / distribution?",t:"radio",other:1,star:1,opts:[["中央统一配送","Central distribution"],["各店自采","Each store sources"],["混合","Mixed"],["计划做","Planned"],["其他","Other"]]},
+   {id:"supplyItems",q:"主要供应物料（可多选）",en:"Main supplies",t:"checks",other:1,opts:[["面","Noodles"],["浇头 / 配料","Toppings"],["包材","Packaging"],["饮料","Drinks"],["设备耗材","Equipment parts"],["其他","Other"]]},
+   {id:"distribute",q:"配送到店方式",en:"Distribution method",t:"radio",other:1,opts:[["自有配送","Own delivery"],["第三方物流","3PL"],["供应商直送","Supplier direct"],["其他","Other"]]},
+   {id:"replenish",q:"门店补货怎么定？",en:"How is replenishment decided?",t:"radio",other:1,opts:[["按销量自动","Auto by sales"],["店长报单","Manager orders"],["定期配送","Scheduled"],["其他","Other"]]},
+   {id:"inventory",q:"库存 / 保质期管理现状",en:"Inventory / shelf-life mgmt",t:"radio",other:1,opts:[["系统管理","System"],["Excel","Excel"],["凭经验","By experience"],["其他","Other"]]},
+ ]},
+ {t:"会员与营销", en:"Membership & Marketing", fields:[
+   {id:"member",q:"是否要会员体系？",en:"Membership program?",t:"radio",other:1,opts:[["要","Yes"],["不要","No"],["计划做","Planned"],["其他","Other"]]},
+   {id:"repeat",q:"复购 / 优惠手段（可多选）",en:"Repeat / promo tools",t:"checks",other:1,opts:[["积分","Points"],["优惠券","Coupons"],["套餐","Combos"],["充值","Prepaid"],["会员价","Member price"],["其他","Other"]]},
+   {id:"onlineOrder",q:"是否要自有线上点单（小程序 / 网页）？",en:"Own online ordering?",t:"radio",other:1,opts:[["要","Yes"],["不要","No"],["计划做","Planned"],["其他","Other"]]},
+   {id:"social",q:"主要营销渠道（可多选）",en:"Marketing channels",t:"checks",other:1,opts:[["小红书","RED"],["抖音 / TikTok","TikTok"],["Instagram","Instagram"],["大众点评 / Yelp","Yelp"],["微信","WeChat"],["其他","Other"]]},
+ ]},
+ {t:"财务与结算", en:"Finance & Settlement", fields:[
+   {id:"storeAccount",q:"各店财务怎么核算？",en:"Per-store accounting",t:"radio",other:1,opts:[["统一系统","Unified system"],["各店 Excel","Each store Excel"],["会计代记","Accountant"],["其他","Other"]]},
+   {id:"franchiseeSettle",q:"加盟商分润 / 结算方式",en:"Franchisee settlement",t:"radio",other:1,star:1,opts:[["按月结","Monthly"],["按流水实时","Real-time on sales"],["按供货","On supply"],["暂无","None"],["其他","Other"]]},
+   {id:"costTrack",q:"成本核算包含哪些（可多选）",en:"Cost tracking",t:"checks",other:1,opts:[["食材成本","Food cost"],["人工","Labor"],["房租","Rent"],["设备折旧","Depreciation"],["平台抽成","Platform fees"],["其他","Other"]]},
+   {id:"recon",q:"现在怎么对账？",en:"How do you reconcile?",t:"radio",other:1,opts:[["人工 Excel","Manual Excel"],["系统","System"],["基本不对","Barely"],["其他","Other"]]},
+ ]},
+ {t:"数据与经营看板", en:"Data & Dashboard", fields:[
+   {id:"dashboard",q:"最想在看板上看到什么？（可多选）",en:"What to see on the dashboard",t:"checks",other:1,star:1,opts:[["各店实时流水","Live sales"],["多店对比 / 排名","Store ranking"],["毛利","Margins"],["库存预警","Stock alerts"],["加盟商业绩","Franchisee perf"],["单品销量","Item sales"],["回本进度","Payback progress"],["其他","Other"]]},
+   {id:"realtime",q:"数据实时性要求",en:"Data freshness",t:"radio",other:1,opts:[["实时","Real-time"],["每天","Daily"],["每周","Weekly"],["其他","Other"]]},
+   {id:"whoSees",q:"谁需要看数据？（可多选）",en:"Who needs to see data",t:"checks",other:1,opts:[["我自己","Me"],["合伙人","Partner"],["店长","Store mgr"],["加盟商","Franchisee"],["投资人","Investor"],["其他","Other"]]},
+ ]},
+ {t:"选址决策", en:"Site Selection", fields:[
+   {id:"siteNeed",q:"是否需要选址决策工具？",en:"Need a site-selection tool?",t:"radio",other:1,opts:[["需要","Need it"],["不需要","No"],["想了解","Tell me more"],["其他","Other"]]},
+   {id:"siteFactors",q:"选址最看重什么？（可多选）",en:"Key site factors",t:"checks",other:1,opts:[["人流量","Foot traffic"],["周边人群（学生 / 华人 / 上班族）","Demographics"],["租金","Rent"],["竞争","Competition"],["停车","Parking"],["外卖覆盖","Delivery coverage"],["其他","Other"]]},
+ ]},
+ {t:"融资与扩张", en:"Financing & Expansion", fields:[
+   {id:"financing",q:"是否在融资 / 招投资人？",en:"Raising / seeking investors?",t:"radio",other:1,opts:[["在融","Raising now"],["计划融","Planned"],["暂不","Not yet"],["其他","Other"]]},
+   {id:"investorData",q:"给投资人看的数据透明化需求（可多选）",en:"Investor-facing data needs",t:"checks",other:1,opts:[["各店盈利模型","Unit economics"],["回本周期","Payback period"],["增长曲线","Growth curve"],["单店标准化报表","Standard store P&L"],["暂不需要","Not needed"],["其他","Other"]]},
+   {id:"expandGoal",q:"扩张目标",en:"Expansion goal",t:"radio",other:1,opts:[["稳健","Steady"],["快速开店","Fast rollout"],["主要靠加盟","Mostly franchise"],["准备上市","Toward IPO"],["其他","Other"]]},
+ ]},
+ {t:"数据现状、系统与集成", en:"Data, Systems & Integration", fields:[
+   {id:"dataWhere",q:"现在数据主要存在哪里？（可多选）",en:"Where data lives now",t:"checks",other:1,opts:[["POS 系统","POS"],["Excel","Excel"],["外卖平台后台","Delivery backend"],["微信 / 纸质","WeChat/Paper"],["其他","Other"]]},
+   {id:"existSystem",q:"现在在用什么系统？（可多选）",en:"Current systems",t:"checks",other:1,opts:[["POS（哪个品牌）","POS (which)"],["QuickBooks","QuickBooks"],["外卖平台","Delivery apps"],["都没有","None"],["其他","Other"]]},
+   {id:"integrate",q:"想打通哪些系统？（可多选）",en:"Integrations wanted",t:"checks",other:1,opts:[["POS","POS"],["外卖平台","Delivery apps"],["会计","Accounting"],["供应商","Suppliers"],["暂不需要","None for now"],["其他","Other"]]},
+   {id:"avoidHeavy",q:"是否希望系统轻量、好上手（不要太复杂）？",en:"Prefer lightweight / easy?",t:"radio",other:1,opts:[["是","Yes"],["无所谓","No preference"],["其他","Other"]]},
+ ]},
+ {t:"优先级、时间、预算 + 落地", en:"Priority, Timeline, Budget & Rollout", fields:[
+   {id:"priority",q:"最想「先上线」哪块？（可多选）",en:"Top to start with",t:"checks",other:1,star:1,opts:[["经营看板","Dashboard"],["门店运营 / POS","Store ops/POS"],["供应链 / 库存","Supply/Inventory"],["加盟管理","Franchise mgmt"],["财务结算","Finance"],["选址","Site selection"],["会员营销","Membership"],["其他","Other"]]},
+   {id:"demoFirst",q:"想先看哪块的 demo？（我们会先做这块给你确认）",en:"Which demo first?",t:"radio",other:1,star:1,opts:[["经营看板","Dashboard"],["加盟管理","Franchise mgmt"],["供应链 / 库存","Supply/Inventory"],["选址","Site selection"],["门店运营","Store ops"],["其他","Other"]]},
+   {id:"timeline",q:"期望多久看到第一版成果？",en:"Desired timeline",t:"radio",other:1,opts:[["1 个月内","<1 mo"],["1–3 个月","1–3 mo"],["3–6 个月","3–6 mo"],["还没定","TBD"],["其他","Other"]]},
+   {id:"budget",q:"预算意向（可选）",en:"Budget (optional)",t:"radio",other:1,opts:[["少于 $10k","<$10k"],["$10–30k","$10–30k"],["$30–60k","$30–60k"],["$60k 以上","$60k+"],["待定","TBD"],["其他","Other"]]},
+   {id:"concern",q:"主要顾虑（可多选）",en:"Main concerns",t:"checks",other:1,opts:[["成本","Cost"],["店长 / 加盟商不会用","Adoption"],["数据安全","Security"],["太复杂","Too complex"],["其他","Other"]]},
+   {id:"notes",q:"其他想补充的（自由填写）",en:"Anything else? (free text)",t:"textarea"},
+ ]},
+];
+
+/* ===================== 状态 & 渲染 ===================== */
+const KEY="noodle_req_v1";
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+if(!state.date){const d=new Date();state.date=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function jsStr(s){return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'");}
+
+function fieldHtml(f){
+  const star=f.star?'<span class="star">★</span>':'';
+  let inner="";
+  if(f.t==="text") inner=`<input type="text" value="${esc(state[f.id]||"")}" oninput="setV('${f.id}',this.value)">`;
+  else if(f.t==="textarea") inner=`<textarea oninput="setV('${f.id}',this.value)">${esc(state[f.id]||"")}</textarea>`;
+  else if(f.t==="radio"||f.t==="checks"){
+    const multi=f.t==="checks";
+    const chips=`<div class="chips">`+f.opts.map(o=>`<span class="chip" data-chip="${f.id}" data-val="${esc(o[0])}" onclick="pick('${f.id}','${jsStr(o[0])}',${multi})">${esc(o[0])}<span class="e">${esc(o[1])}</span></span>`).join("")+`</div>`;
+    const ob=f.other?`<div class="otherbox" id="ob_${f.id}" style="display:none"><input type="text" value="${esc(state[f.id+'_o']||"")}" oninput="setV('${f.id}_o',this.value)" placeholder="请填写其他…  /  Please specify"></div>`:"";
+    inner=chips+ob;
+  }
+  return `<div class="fld"><div class="q">${esc(f.q)}${star} <span class="en">${esc(f.en)}</span></div>${inner}</div>`;
+}
+
+function render(){
+  document.getElementById("form").innerHTML=FORM.map((sec,si)=>`
+    <div class="sec" id="sec${si}">
+      <div class="hd" onclick="toggleSec(${si})">
+        <span class="ix">${si}</span>
+        <span class="nm">${esc(sec.t)}<small>${esc(sec.en)}</small></span>
+        <span class="cv" id="cv${si}"></span>
+        <span class="ar">▾</span>
+      </div>
+      <div class="bd">${sec.fields.map(fieldHtml).join("")}</div>
+    </div>`).join("");
+  FORM.forEach(s=>s.fields.forEach(f=>{if(f.t==="radio"||f.t==="checks")renderChips(f.id);}));
+  updateProgress();
+}
+function toggleSec(si){document.getElementById("sec"+si).classList.toggle("col");}
+function setV(id,v){state[id]=v;save();}
+function otherSel(id){const v=state[id];return Array.isArray(v)?v.indexOf("其他")>=0:v==="其他";}
+function pick(id,val,multi){
+  if(multi){let a=Array.isArray(state[id])?state[id]:[];const i=a.indexOf(val);if(i>=0)a.splice(i,1);else a.push(val);state[id]=a;}
+  else{state[id]=state[id]===val?"":val;}
+  save();renderChips(id);
+}
+function renderChips(id){
+  document.querySelectorAll('[data-chip="'+id+'"]').forEach(el=>{
+    const v=state[id];const on=Array.isArray(v)?v.indexOf(el.dataset.val)>=0:v===el.dataset.val;
+    el.classList.toggle("on",on);
+  });
+  const ob=document.getElementById("ob_"+id);
+  if(ob)ob.style.display=otherSel(id)?"block":"none";
+}
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(state));
+  const ind=document.getElementById("saveInd");if(ind){ind.textContent="✓ 已自动保存";ind.style.opacity="1";}
+  updateProgress();
+}
+function filled(v){return Array.isArray(v)?v.length>0:(v!=null&&String(v).trim()!=="");}
+function updateProgress(){
+  let total=0,done=0;
+  FORM.forEach(s=>s.fields.forEach(f=>{total++;if(filled(state[f.id]))done++;}));
+  document.getElementById("pct").textContent="已填 "+done+" / "+total;
+  document.getElementById("progbar").style.width=(total?Math.round(done/total*100):0)+"%";
+  FORM.forEach((s,si)=>{let t=0,d=0;s.fields.forEach(f=>{t++;if(filled(state[f.id]))d++;});const cv=document.getElementById("cv"+si);if(cv)cv.textContent=d+"/"+t;});
+}
+function clearAll(){
+  if(!confirm("确定清空所有已填内容？此操作不可恢复。"))return;
+  state={};localStorage.removeItem(KEY);
+  const d=new Date();state.date=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  render();toast("已清空");
+}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1900);}
+
+/* ===================== 取值 & 导出 ===================== */
+function answerOf(f){
+  let v=state[f.id];
+  if(f.t==="checks"){
+    let arr=Array.isArray(v)?v.slice():[];
+    if(f.other&&arr.indexOf("其他")>=0){const o=state[f.id+"_o"];arr=arr.map(x=>x==="其他"?("其他："+(o||"")):x);}
+    return arr.join("; ");
+  }
+  if(f.t==="radio"){
+    if(f.other&&v==="其他")return "其他："+(state[f.id+"_o"]||"");
+    return v||"";
+  }
+  return v==null?"":String(v);
+}
+function buildRows(){
+  const now=new Date();
+  const ts=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0")+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+  const rows=[];
+  rows.push(["方便面连锁 · 数字化需求收集表 / Noodle Franchise Requirements"]);
+  rows.push(["导出时间 Exported",ts]);
+  rows.push(["填表人 Filled by",String(state.name||"")]);
+  rows.push([]);
+  rows.push(["模块 Section","问题 Question","回答 Answer"]);
+  FORM.forEach(sec=>{sec.fields.forEach(f=>{rows.push([sec.t+" / "+sec.en, f.q+"  ("+f.en+")", answerOf(f)]);});});
+  return rows;
+}
+function fname(ext){
+  const now=new Date();const d=now.getFullYear()+String(now.getMonth()+1).padStart(2,"0")+String(now.getDate()).padStart(2,"0");
+  const who=(state.brand||state.name||"Noodle").replace(/[^\w一-龥]/g,"");
+  return "方便面连锁需求_"+who+"_"+d+"."+ext;
+}
+function exportCsv(){
+  const rows=buildRows();
+  const csv=rows.map(r=>r.map(c=>{c=String(c==null?"":c);return /[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c;}).join(",")).join("\r\n");
+  dl(new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"}),fname("csv"));toast("已导出 CSV，请发回给我们");
+}
+/* ---------- XLSX：自建 ZIP-STORE + inlineStr（真正 .xlsx） ---------- */
+const CRC=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0;}return t;})();
+function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRC[(c^u8[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function colName(n){let s="";n++;while(n>0){let m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-m-1)/26);}return s;}
+function sheetXml(rows){
+  let body="";
+  rows.forEach((row,ri)=>{let cells="";row.forEach((val,ci)=>{const ref=colName(ci)+(ri+1);cells+=`<c r="${ref}" t="inlineStr"><is><t xml:space="preserve">${esc(val)}</t></is></c>`;});body+=`<row r="${ri+1}">${cells}</row>`;});
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><cols><col min="1" max="1" width="28"/><col min="2" max="2" width="54"/><col min="3" max="3" width="60"/></cols><sheetData>${body}</sheetData></worksheet>`;
+}
+function zipStore(files){
+  const enc=new TextEncoder();let parts=[],offset=0,central=[];
+  const u16=n=>[n&255,(n>>8)&255];const u32=n=>[n&255,(n>>8)&255,(n>>16)&255,(n>>24)&255];
+  files.forEach(f=>{const nb=enc.encode(f.name);const data=f.data;const crc=crc32(data);const sz=data.length;const local=[0x50,0x4b,0x03,0x04].concat(u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nb.length),u16(0));parts.push(new Uint8Array(local));parts.push(nb);parts.push(data);central.push({nb,crc,sz,offset});offset+=local.length+nb.length+sz;});
+  const cdStart=offset;let cdLen=0;central.forEach(c=>{const h=[0x50,0x4b,0x01,0x02].concat(u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(c.crc),u32(c.sz),u32(c.sz),u16(c.nb.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(c.offset));parts.push(new Uint8Array(h));parts.push(c.nb);cdLen+=h.length+c.nb.length;});
+  const eocd=[0x50,0x4b,0x05,0x06].concat(u16(0),u16(0),u16(central.length),u16(central.length),u32(cdLen),u32(cdStart),u16(0));parts.push(new Uint8Array(eocd));
+  let total=parts.reduce((a,p)=>a+p.length,0),out=new Uint8Array(total),p=0;parts.forEach(x=>{out.set(x,p);p+=x.length;});return out;
+}
+function exportXlsx(){
+  try{
+    const enc=new TextEncoder();const rows=buildRows();
+    const CT=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>`;
+    const RELS=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+    const WB=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="方便面需求 Requirements" sheetId="1" r:id="rId1"/></sheets></workbook>`;
+    const WBR=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`;
+    const SH=sheetXml(rows);
+    const files=[{name:"[Content_Types].xml",data:enc.encode(CT)},{name:"_rels/.rels",data:enc.encode(RELS)},{name:"xl/workbook.xml",data:enc.encode(WB)},{name:"xl/_rels/workbook.xml.rels",data:enc.encode(WBR)},{name:"xl/worksheets/sheet1.xml",data:enc.encode(SH)}];
+    const bytes=zipStore(files);
+    dl(new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}),fname("xlsx"));toast("已导出 Excel，请发回给我们");
+  }catch(e){alert("导出失败，请改用 CSV 按钮。\n"+e);}
+}
+function dl(blob,name){const a=document.createElement("a");const url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},800);}
+
+render();
+</script>
+</body>
+</html>
