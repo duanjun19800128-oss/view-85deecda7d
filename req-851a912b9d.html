@@ -66,13 +66,13 @@
 
 <div class="top">
   <div class="ttl">FOA 数字化项目 · 开发需求收集表</div>
-  <div class="sub">FOA Digitalization — Development Requirements Intake　|　约 10–15 分钟 · 大多是选择题 · 可随时保存继续</div>
+  <div class="sub">FOA Digitalization — Development Requirements Intake　|　完整版 · 约 15–20 分钟 · 大多是选择题 · 可随时保存继续</div>
   <div class="bar"><div class="prog"><i id="progbar"></i></div><div class="pct" id="pct">已填 0 / 0</div></div>
 </div>
 
 <div class="wrap">
   <div class="intro">
-    👋 这份表帮我们快速摸清 FOA 的实际业务流程，<b>大多是选择题，点一点就行；选项里没有的，选「其他」手动填</b>。填得越准，我们就能越快做出贴合你们经销商（Dealer）模式的系统。<br>
+    👋 这是<b>完整版需求表</b>，覆盖从公司、经销商体系、报价、结算返点、合同应收、库存多仓履约、门户、数据集成与权限、AI 到落地的全部环节。<b>大多是选择题，点一点就行；选项里没有的，选「其他」手动填</b>。填得越准，我们就能越快做出贴合你们经销商（Dealer）模式的系统。<br>
     <span style="color:var(--ink)">Mostly multiple-choice — just tap. If an option isn't listed, pick "其他 / Other" and type your own.</span><br>
     🔒 <b>你填的内容只存在你这台设备上</b>，不会自动上传。填好后点底部「导出 Excel」，把文件发回给我们即可。带 <span style="color:var(--gold)">★</span> 的是我们最想了解的重点项。
   </div>
@@ -93,77 +93,132 @@
 <script>
 /* ===================== 表单定义（中英双语 · 尽量选择题 · 每题可选「其他」手填） ===================== */
 const FORM=[
- {t:"基本信息", en:"Company & Contact", fields:[
+ {t:"公司与联系人", en:"Company & Contact", fields:[
    {id:"company",q:"公司 / 品牌名称",en:"Company / Brand",t:"text"},
    {id:"name",q:"填表人",en:"Your name",t:"text",star:1},
-   {id:"role",q:"你的角色 / 职务",en:"Your role",t:"radio",other:1,opts:[["老板 / 总经理","Owner/GM"],["运营负责人","Ops lead"],["财务","Finance"],["IT / 技术","IT"],["销售","Sales"],["其他","Other"]]},
+   {id:"role",q:"你的角色 / 职务",en:"Your role",t:"radio",other:1,opts:[["老板 / 总经理","Owner/GM"],["运营负责人","Ops lead"],["财务","Finance"],["IT / 技术","IT"],["销售","Sales"],["采购","Purchasing"],["其他","Other"]]},
    {id:"contact",q:"联系方式（邮箱 / 电话 / 微信）",en:"Contact",t:"text"},
    {id:"date",q:"填表日期",en:"Date",t:"text"},
-   {id:"curSys",q:"目前在用的系统 / 工具（可多选）",en:"Current systems / tools",t:"checks",other:1,opts:[["手工 Excel","Excel"],["QuickBooks","QuickBooks"],["NetSuite","NetSuite"],["自研系统","In-house"],["只靠邮件 + 电话","Email/Phone only"],["其他","Other"]]},
+   {id:"companySize",q:"公司规模（员工数）",en:"Company size (staff)",t:"radio",other:1,opts:[["少于 10 人","<10"],["10–50 人","10–50"],["50–200 人","50–200"],["200 人以上","200+"],["其他","Other"]]},
+   {id:"region",q:"业务覆盖区域（可多选）",en:"Coverage region",t:"checks",other:1,opts:[["美国全境","US nationwide"],["美西","US West"],["美东","US East"],["美南","US South"],["加拿大","Canada"],["海外","Overseas"],["其他","Other"]]},
+   {id:"decision",q:"这个项目谁拍板？",en:"Who decides on this project?",t:"radio",other:1,opts:[["我自己","Me"],["老板 / CEO","Owner/CEO"],["管理层集体","Mgmt team"],["董事会","Board"],["其他","Other"]]},
+   {id:"itLevel",q:"团队对数字化 / 软件的熟悉程度",en:"Team's digital comfort level",t:"radio",other:1,opts:[["很熟练","Very comfortable"],["一般","Moderate"],["不熟、需多培训","Need training"],["其他","Other"]]},
    {id:"pains",q:"目前最头疼的问题（可多选）",en:"Top pain points",t:"checks",other:1,star:1,opts:[["报价慢 / 容易算错","Slow/error quotes"],["库存看不准","Inaccurate stock"],["对账乱、返点算不清","Messy reconciliation"],["应收催收难","Hard to collect"],["订单进度不透明","No order visibility"],["数据散在各处 Excel","Scattered data"],["经销商重复问问题","Repetitive dealer Qs"],["其他","Other"]]},
  ]},
- {t:"业务规模", en:"Business Scale", fields:[
+ {t:"业务概况与规模", en:"Business Overview & Scale", fields:[
+   {id:"bizModel",q:"业务模式（可多选）",en:"Business model",t:"checks",other:1,star:1,opts:[["经销分销（批发给 dealer）","Wholesale to dealers"],["直营零售","Direct retail"],["工程 / 项目","Projects"],["电商","E-commerce"],["其他","Other"]]},
    {id:"dealers",q:"经销商（Dealer）数量",en:"# of dealers",t:"radio",other:1,star:1,opts:[["少于 20","<20"],["20–50","20–50"],["50–100","50–100"],["100 以上","100+"],["其他","Other"]]},
+   {id:"dealerTypes",q:"经销商类型（可多选）",en:"Dealer types",t:"checks",other:1,opts:[["独立家具店","Furniture store"],["橱柜专卖店","Cabinet showroom"],["室内设计公司","Interior design"],["装修承包商","Contractor"],["电商卖家","Online seller"],["其他","Other"]]},
+   {id:"endCustomer",q:"终端客户是谁（可多选）",en:"End customers",t:"checks",other:1,opts:[["业主 / 消费者","Homeowners"],["装修公司","Remodelers"],["开发商 / 工程","Developers"],["其他","Other"]]},
    {id:"warehouses",q:"仓库数量",en:"# of warehouses",t:"radio",other:1,star:1,opts:[["1 个","1"],["2–3 个","2–3"],["4–6 个","4–6"],["6 个以上","6+"],["其他","Other"]]},
    {id:"instock",q:"现货发货比例（约）",en:"In-stock ship rate",t:"radio",other:1,opts:[["少于 50%","<50%"],["50–80%","50–80%"],["80–95%","80–95%"],["95% 以上","95%+"],["不确定","Not sure"],["其他","Other"]]},
    {id:"factory",q:"工厂 / 产品线（可多选）",en:"Factory / product lines",t:"checks",other:1,opts:[["美式（越南厂）","US (Vietnam)"],["欧式（达拉斯）","Euro (Dallas)"],["不锈钢","Stainless"],["其他","Other"]]},
    {id:"skus",q:"在管 SKU 数量（约）",en:"# of SKUs",t:"radio",other:1,opts:[["少于 500","<500"],["500–2000","500–2000"],["2000–5000","2000–5000"],["5000 以上","5000+"],["不确定","Not sure"],["其他","Other"]]},
    {id:"orders",q:"月均订单量（约）",en:"Monthly orders",t:"radio",other:1,opts:[["少于 100","<100"],["100–500","100–500"],["500–2000","500–2000"],["2000 以上","2000+"],["不确定","Not sure"],["其他","Other"]]},
+   {id:"revenue",q:"年营收区间（可选）",en:"Annual revenue (optional)",t:"radio",other:1,opts:[["少于 $5M","<$5M"],["$5–20M","$5–20M"],["$20–50M","$20–50M"],["$50M 以上","$50M+"],["不便透露","Prefer not"],["其他","Other"]]},
+   {id:"seasonality",q:"销售的季节波动",en:"Seasonality",t:"radio",other:1,opts:[["明显旺淡季","Strong"],["较平稳","Stable"],["其他","Other"]]},
+   {id:"growthGoal",q:"未来增长目标",en:"Growth goal",t:"radio",other:1,opts:[["稳健增长","Steady"],["翻倍","Double"],["快速扩张","Aggressive"],["其他","Other"]]},
  ]},
- {t:"报价台（单元柜）", en:"Quoting — Kitty 明确要", fields:[
+ {t:"报价台（单元柜）", en:"Quoting (Unit Cabinet)", fields:[
    {id:"quoteNow",q:"现在怎么给经销商报价？（可多选）",en:"How do you quote today?",t:"checks",other:1,star:1,opts:[["线下 Excel 手算","Manual Excel"],["照厂家价目表","Vendor price list"],["现有系统出价","Existing system"],["销售各自报价","Each rep"],["其他","Other"]]},
    {id:"quoteUnit",q:"报价的计价单位",en:"Quote by",t:"radio",other:1,star:1,opts:[["按单元柜 (BC/SB/B/W/T)","Per unit cabinet"],["整套方案","Full package"],["按线性尺寸","Linear ft"],["其他","Other"]]},
    {id:"cabTypes",q:"在用的单元柜种类（可多选）",en:"Cabinet types in use",t:"checks",other:1,opts:[["Base 底柜","Base"],["Wall 吊柜","Wall"],["Tall 高柜","Tall"],["Sink Base 水槽柜","Sink Base"],["Vanity 浴室柜","Vanity"],["Island 中岛","Island"],["配件 Accessories","Accessories"],["其他","Other"]]},
+   {id:"quoteSpeed",q:"现在出一份报价大概要多久？",en:"Time to produce a quote",t:"radio",other:1,opts:[["即时","Instant"],["几小时","Hours"],["1 天","1 day"],["几天","Several days"],["其他","Other"]]},
+   {id:"quoteInclude",q:"报价里需要包含哪些（可多选）",en:"Quote should include",t:"checks",other:1,opts:[["产品价","Product price"],["运费","Freight"],["税","Tax"],["安装费","Install"],["折扣","Discount"],["其他","Other"]]},
    {id:"stockMatch",q:"是否需要「多仓现货实时匹配」（报价时自动看哪个仓有货）？",en:"Real-time multi-warehouse stock match?",t:"radio",other:1,star:1,opts:[["需要","Need it"],["不需要","No"],["想了解","Tell me more"],["其他","Other"]]},
    {id:"tierPrice",q:"价格是否按经销商等级分层？",en:"Tiered pricing by dealer level?",t:"radio",other:1,opts:[["是","Yes"],["否","No"],["计划做","Planned"],["其他","Other"]]},
+   {id:"combo",q:"是否要支持套餐 / 促销价？",en:"Support bundles / promo pricing?",t:"radio",other:1,opts:[["需要","Need it"],["不需要","No"],["其他","Other"]]},
+   {id:"quoteVisual",q:"报价单是否要带产品图 / 效果图？",en:"Quotes need images / renders?",t:"radio",other:1,opts:[["要","Yes"],["不要","No"],["最好有","Nice to have"],["其他","Other"]]},
+   {id:"currency",q:"币种",en:"Currency",t:"radio",other:1,opts:[["只 USD","USD only"],["USD + CAD","USD+CAD"],["其他","Other"]]},
    {id:"quoteApprove",q:"报价 / 改价的审批方式（可多选）",en:"Quote approval",t:"checks",other:1,opts:[["销售可直接报、无需审批","No approval"],["需经理审批","Manager"],["需财务审批","Finance"],["系统按规则自动","System rule"],["其他","Other"]]},
+   {id:"quoteValidity",q:"是否需要管理报价有效期？",en:"Track quote validity / expiry?",t:"radio",other:1,opts:[["需要","Need it"],["不需要","No"],["其他","Other"]]},
  ]},
- {t:"经销商结算 + 返点", en:"Settlement & Referral — 第一需求", fields:[
+ {t:"经销商结算 + 返点", en:"Settlement & Referral", fields:[
    {id:"tiers",q:"经销商分几个等级 / 层级？",en:"# of dealer tiers",t:"radio",other:1,star:1,opts:[["1 层（统一价）","1"],["2 层","2"],["3 层","3"],["4 层以上","4+"],["其他","Other"]]},
    {id:"rateType",q:"返点 / 折扣的形式（可多选）",en:"Referral / discount structure",t:"checks",other:1,star:1,opts:[["固定折扣","Fixed discount"],["按量阶梯返点","Volume tiers"],["推荐返点（谁带谁）","Referral commission"],["季度 / 年度返利","Periodic rebate"],["其他","Other"]]},
    {id:"rates",q:"大致返点比例 — 可直接填（如 T1 5%、T2 3%）",en:"Approx rates (free text)",t:"text"},
    {id:"subTier",q:"有没有二级推荐返点（Sub-Tier / 推荐分成）？",en:"Sub-tier referral?",t:"radio",other:1,star:1,opts:[["有","Yes"],["无","No"],["计划做","Planned"],["其他","Other"]]},
+   {id:"referralForm",q:"返点以什么形式发放（可多选）",en:"Referral paid as",t:"checks",other:1,opts:[["现金","Cash"],["抵货款","Credit on orders"],["积分","Points"],["信用额度","Credit line"],["其他","Other"]]},
+   {id:"referralWhen",q:"返点何时兑现？",en:"When is referral paid?",t:"radio",other:1,opts:[["即时","Immediate"],["月结","Monthly"],["季结","Quarterly"],["年结","Annually"],["其他","Other"]]},
+   {id:"bonus",q:"是否有达标奖励 / 阶梯返利？",en:"Target-based bonus / rebate?",t:"radio",other:1,opts:[["有","Yes"],["无","No"],["计划做","Planned"],["其他","Other"]]},
+   {id:"returnImpact",q:"退货怎么影响返点？",en:"How do returns affect referral?",t:"radio",other:1,opts:[["扣回","Clawed back"],["不影响","No impact"],["个案处理","Case by case"],["其他","Other"]]},
    {id:"cycle",q:"结算 / 对账周期",en:"Settlement cycle",t:"radio",other:1,opts:[["按单","Per order"],["按周","Weekly"],["按月","Monthly"],["按季","Quarterly"],["其他","Other"]]},
    {id:"reconNow",q:"现在和经销商怎么对账？（可多选）",en:"Current reconciliation",t:"checks",other:1,opts:[["人工 Excel 核对","Manual Excel"],["月底出对账单","Monthly statement"],["系统自动","Automated"],["基本不对账","Barely"],["其他","Other"]]},
+   {id:"whoCalc",q:"现在谁负责算返点？",en:"Who calculates referral?",t:"radio",other:1,opts:[["财务","Finance"],["销售","Sales"],["系统","System"],["老板","Owner"],["其他","Other"]]},
+   {id:"dealerSeeRef",q:"经销商能否实时看到自己的返点？",en:"Can dealers see their own referral live?",t:"radio",other:1,opts:[["能","Yes"],["不能","No"],["希望能","Want this"],["其他","Other"]]},
    {id:"settlePain",q:"结算 / 返点最大的痛点（可多选）",en:"Biggest settlement pain",t:"checks",other:1,opts:[["返点算不清","Hard to calc"],["对账太慢","Slow recon"],["经销商常有异议","Dealer disputes"],["数据太散","Scattered"],["没法实时看","No real-time"],["其他","Other"]]},
  ]},
  {t:"合同 / 协议 + 应收", en:"Contracts & Receivables", fields:[
    {id:"agreement",q:"经销协议主要条款（可多选）",en:"Dealer agreement terms",t:"checks",other:1,opts:[["返货政策","Return policy"],["价格保护","Price protection"],["区域保护","Territory"],["最低进货量","Min purchase"],["独家代理","Exclusivity"],["其他","Other"]]},
+   {id:"renewCycle",q:"经销协议续签周期",en:"Agreement renewal cycle",t:"radio",other:1,opts:[["一年","Annual"],["多年","Multi-year"],["长期 / 不固定","Open-ended"],["其他","Other"]]},
+   {id:"eSign",q:"是否使用电子签？",en:"Use e-signature?",t:"radio",other:1,opts:[["是","Yes"],["否","No"],["希望用","Want this"],["其他","Other"]]},
    {id:"terms",q:"账期（可多选）",en:"Payment terms",t:"checks",other:1,opts:[["预付","Prepay"],["货到付款","COD"],["Net 30","Net 30"],["Net 60","Net 60"],["其他","Other"]]},
    {id:"credit",q:"是否给经销商设信用额度？",en:"Credit limit per dealer?",t:"radio",other:1,opts:[["是","Yes"],["否","No"],["部分经销商","Some"],["其他","Other"]]},
+   {id:"invoiceWay",q:"发票怎么开？",en:"How are invoices issued?",t:"radio",other:1,opts:[["系统开","System"],["手工开","Manual"],["会计代开","By accountant"],["其他","Other"]]},
    {id:"poFlow",q:"经销商逐单下单（PO）的方式（可多选）",en:"Per-order PO method",t:"checks",other:1,opts:[["邮件","Email"],["电话 / 微信","Phone/WeChat"],["在线表单","Online form"],["现有系统","System"],["其他","Other"]]},
+   {id:"arAging",q:"当前应收账龄状况",en:"Current AR aging",t:"radio",other:1,opts:[["基本无逾期","Mostly current"],["少量逾期","Some overdue"],["较多逾期","Heavy overdue"],["不清楚","Not sure"],["其他","Other"]]},
    {id:"collect",q:"逾期 / 欠款怎么催收？（可多选）",en:"How you collect overdue",t:"checks",other:1,opts:[["电话催","Call"],["邮件催","Email"],["暂停发货","Hold shipments"],["扣返点","Deduct referral"],["交财务 / 法务","Finance/Legal"],["其他","Other"]]},
+   {id:"deposit",q:"是否收押金 / 保证金？",en:"Collect deposit / security?",t:"radio",other:1,opts:[["是","Yes"],["否","No"],["部分","Some"],["其他","Other"]]},
  ]},
- {t:"订单履约流程", en:"Order Fulfillment", fields:[
+ {t:"库存、多仓 + 订单履约", en:"Inventory, Warehouses & Fulfillment", fields:[
    {id:"flow",q:"从下单到签收，包含哪些环节？（可多选）",en:"Order-to-delivery steps",t:"checks",other:1,star:1,opts:[["接单 / 录单","Order intake"],["审核","Review"],["仓库匹配 / 分仓","Warehouse alloc"],["拣货打包","Pick & pack"],["发货","Ship"],["物流跟踪","Track"],["签收确认","Delivery confirm"],["其他","Other"]]},
    {id:"allocRule",q:"由哪个仓发货怎么决定？",en:"Warehouse allocation rule",t:"radio",other:1,opts:[["就近仓优先","Nearest"],["库存最多的仓","Most stock"],["指定仓","Assigned"],["系统自动","Auto"],["其他","Other"]]},
+   {id:"leadTime",q:"订单平均交期",en:"Average lead time",t:"radio",other:1,opts:[["当天","Same day"],["1–3 天","1–3 days"],["约 1 周","~1 week"],["更久","Longer"],["其他","Other"]]},
+   {id:"partialShip",q:"是否支持分批 / 部分发货？",en:"Support partial / split shipments?",t:"radio",other:1,opts:[["支持","Yes"],["不支持","No"],["其他","Other"]]},
+   {id:"carriers",q:"主要承运方式（可多选）",en:"Carriers",t:"checks",other:1,opts:[["FedEx","FedEx"],["UPS","UPS"],["LTL 货运","LTL freight"],["自有车队","Own fleet"],["经销商自提","Dealer pickup"],["其他","Other"]]},
+   {id:"transfer",q:"跨仓调拨频率",en:"Inter-warehouse transfers",t:"radio",other:1,opts:[["经常","Often"],["偶尔","Sometimes"],["没有","None"],["其他","Other"]]},
    {id:"returns",q:"退换货情况",en:"Returns / exchanges",t:"radio",other:1,opts:[["有标准退换流程","Standard process"],["个案处理","Case by case"],["很少退换","Rare"],["其他","Other"]]},
    {id:"replenish",q:"缺货 / 补货怎么处理？（可多选）",en:"Out-of-stock / replenishment",t:"checks",other:1,opts:[["定期补货","Scheduled"],["按库存阈值","Threshold"],["按销售预测","Forecast"],["手动判断","Manual"],["其他","Other"]]},
+   {id:"stockVisible",q:"现在能实时看到各仓库存吗？",en:"Real-time stock visibility per warehouse?",t:"radio",other:1,opts:[["能","Yes"],["不能","No"],["部分","Partly"],["其他","Other"]]},
+   {id:"damage",q:"破损 / 缺件怎么处理？",en:"Damage / missing parts handling",t:"radio",other:1,opts:[["有标准流程","Standard process"],["个案处理","Case by case"],["其他","Other"]]},
  ]},
  {t:"经销商自助门户", en:"Dealer Self-Service Portal", fields:[
    {id:"selfServe",q:"希望经销商能自助做哪些事？（可多选）",en:"What should dealers self-serve?",t:"checks",other:1,opts:[["下单","Order"],["查现货库存","Check stock"],["查订单状态","Track orders"],["查对账单","Statements"],["查返点收益","Referral earnings"],["下载发票","Invoices"],["其他","Other"]]},
    {id:"portalNo",q:"哪些数据经销商「绝对不能看到」？（可多选）",en:"Data dealers must NOT see",t:"checks",other:1,star:1,opts:[["成本价","Cost price"],["其他经销商的数据","Other dealers' data"],["总库存","Total inventory"],["利润","Margins"],["内部备注","Internal notes"],["其他","Other"]]},
    {id:"orderNow",q:"经销商现在怎么下单？",en:"How dealers order now",t:"radio",other:1,opts:[["邮件","Email"],["电话 / 微信","Phone/WeChat"],["在线门户","Online portal"],["销售代下","Via sales rep"],["其他","Other"]]},
+   {id:"device",q:"经销商主要用什么设备访问？",en:"Devices dealers use",t:"radio",other:1,opts:[["手机","Phone"],["电脑","Computer"],["都有","Both"],["其他","Other"]]},
+   {id:"subAccounts",q:"一个经销商是否需要多个子账号？",en:"Multiple sub-accounts per dealer?",t:"radio",other:1,opts:[["需要","Yes"],["不需要","No"],["其他","Other"]]},
+   {id:"portalLang",q:"门户语言",en:"Portal language",t:"radio",other:1,opts:[["英文","English"],["中英双语","Bilingual"],["其他","Other"]]},
+   {id:"marketingArea",q:"是否要营销资料 / 图册下载区？",en:"Marketing/catalog download area?",t:"radio",other:1,opts:[["要","Yes"],["不要","No"],["其他","Other"]]},
+   {id:"notify",q:"通知经销商的方式（可多选）",en:"Notification channels",t:"checks",other:1,opts:[["邮件","Email"],["短信","SMS"],["站内消息","In-app"],["微信 / WhatsApp","WeChat/WhatsApp"],["其他","Other"]]},
  ]},
- {t:"数据现状 & 系统集成", en:"Data & Integration", fields:[
+ {t:"数据、集成与权限", en:"Data, Integration & Security", fields:[
    {id:"dataWhere",q:"业务数据现在主要存在哪里？（可多选）",en:"Where data lives now",t:"checks",other:1,opts:[["Excel 表格","Excel"],["会计软件","Accounting SW"],["WMS / 库存系统","WMS"],["邮件 / 纸质","Email/Paper"],["其他","Other"]]},
    {id:"exportFields",q:"现在能导出哪些数据？（可多选）",en:"What you can export today",t:"checks",other:1,opts:[["合同","Contracts"],["订单","Orders"],["库存","Inventory"],["收款","Payments"],["经销商资料","Dealer info"],["发票","Invoices"],["都能导","All"],["其他","Other"]]},
+   {id:"dataVolume",q:"数据量级（约）",en:"Data volume",t:"radio",other:1,opts:[["小（几千条）","Small"],["中（几万条）","Medium"],["大（几十万+）","Large"],["不确定","Not sure"],["其他","Other"]]},
+   {id:"migrate",q:"历史数据是否要迁移到新系统？",en:"Migrate historical data?",t:"radio",other:1,opts:[["要","Yes"],["不要","No"],["部分","Some"],["其他","Other"]]},
+   {id:"dataQuality",q:"现有数据的准确度",en:"Current data quality",t:"radio",other:1,opts:[["较准","Good"],["一般","Okay"],["较乱、需清洗","Messy"],["其他","Other"]]},
    {id:"integrate",q:"需要和哪些系统打通？（可多选）",en:"Integrations needed",t:"checks",other:1,opts:[["会计软件","Accounting"],["物流 / 运输","Logistics"],["电商平台","E-commerce"],["银行 / 支付","Bank/Payment"],["暂不需要","None for now"],["其他","Other"]]},
    {id:"avoidErp",q:"是否希望避免重型 ERP（如 Oracle / SAP）？",en:"Avoid heavy ERP?",t:"radio",other:1,opts:[["是，要轻量","Yes, keep light"],["无所谓","No preference"],["已有 ERP 需对接","Have ERP, integrate"],["其他","Other"]]},
+   {id:"security",q:"安全 / 权限要求（可多选）",en:"Security / access needs",t:"checks",other:1,opts:[["角色权限","Role-based access"],["数据隔离（dealer 互不可见）","Data isolation"],["操作留痕 / 审计","Audit log"],["单点登录 SSO","SSO"],["其他","Other"]]},
+   {id:"itTeam",q:"你们有 IT 团队吗？",en:"Do you have an IT team?",t:"radio",other:1,opts:[["有内部 IT","Internal IT"],["外包","Outsourced"],["没有","None"],["其他","Other"]]},
  ]},
  {t:"AI 助理期望", en:"AI Assistant", fields:[
-   {id:"ai",q:"最想要哪些 AI 自动化？（可多选）",en:"Desired AI automations",t:"checks",other:1,opts:[["催收话术","Dunning msgs"],["客服问答","Customer Q&A"],["补货建议","Replenishment"],["报价生成","Quote drafting"],["对账核对","Reconciliation"],["暂不需要","None"],["其他","Other"]]},
+   {id:"ai",q:"最想要哪些 AI 自动化？（可多选）",en:"Desired AI automations",t:"checks",other:1,star:1,opts:[["催收话术","Dunning msgs"],["客服问答","Customer Q&A"],["补货建议","Replenishment"],["报价生成","Quote drafting"],["对账核对","Reconciliation"],["暂不需要","None"],["其他","Other"]]},
+   {id:"aiConfirm",q:"AI 输出是否要人工确认后才发出？",en:"Require human confirm before AI sends?",t:"radio",other:1,opts:[["要（更稳）","Yes (safer)"],["不用（自动）","No (auto)"],["看情况","Depends"],["其他","Other"]]},
+   {id:"aiLang",q:"客服 / 话术语言（可多选）",en:"Customer-facing language",t:"checks",other:1,opts:[["英文","English"],["中文","Chinese"],["西班牙语","Spanish"],["其他","Other"]]},
+   {id:"aiAccept",q:"团队对使用 AI 的接受度",en:"Team's openness to AI",t:"radio",other:1,opts:[["很期待","Excited"],["中立","Neutral"],["有顾虑","Concerned"],["其他","Other"]]},
+   {id:"aiOne",q:"最想让 AI 帮你解决的一件事（自由填写）",en:"One thing you'd most want AI to do",t:"text"},
  ]},
- {t:"优先级 / 时间 / 预算", en:"Priority, Timeline & Budget", fields:[
+ {t:"目标、优先级、时间与预算", en:"Goals, Priority, Timeline & Budget", fields:[
    {id:"priority",q:"最想「先上线」哪 1–2 块？（可多选）",en:"Top 1–2 to start with",t:"checks",other:1,star:1,opts:[["报价台","Quoting"],["结算 + 返点","Settlement"],["合同 + 应收","Contracts & AR"],["订单履约","Fulfillment"],["经销商门户","Dealer portal"],["数据中台","Data hub"],["AI 助理","AI assistant"],["其他","Other"]]},
+   {id:"successKPI",q:"这套系统怎样算「做成功了」？（可多选）",en:"What does success look like?",t:"checks",other:1,opts:[["报价更快","Faster quotes"],["对账不出错","Accurate recon"],["应收回款更快","Faster collections"],["经销商更满意","Dealer satisfaction"],["省人力","Save labor"],["看清经营数据","Clear data view"],["其他","Other"]]},
+   {id:"rollout",q:"上线方式",en:"Rollout approach",t:"radio",other:1,opts:[["一次性全上","Big bang"],["分阶段","Phased"],["先试点","Pilot first"],["其他","Other"]]},
    {id:"timeline",q:"期望多久看到第一版成果？",en:"Desired timeline for v1",t:"radio",other:1,opts:[["1 个月内","<1 mo"],["1–3 个月","1–3 mo"],["3–6 个月","3–6 mo"],["6 个月以上","6+ mo"],["还没定","TBD"],["其他","Other"]]},
    {id:"budget",q:"预算意向（可选）",en:"Budget range (optional)",t:"radio",other:1,opts:[["少于 $20k","<$20k"],["$20–50k","$20–50k"],["$50–100k","$50–100k"],["$100k 以上","$100k+"],["待定","TBD"],["其他","Other"]]},
    {id:"notes",q:"其他想补充的（自由填写）",en:"Anything else? (free text)",t:"textarea"},
  ]},
+ {t:"项目落地与顾虑", en:"Rollout & Concerns", fields:[
+   {id:"training",q:"培训需求",en:"Training needs",t:"radio",other:1,opts:[["需要详细培训","Detailed training"],["简单上手即可","Light onboarding"],["其他","Other"]]},
+   {id:"whoMaintain",q:"系统上线后谁来录入 / 维护数据？",en:"Who maintains the data?",t:"radio",other:1,opts:[["专人负责","Dedicated person"],["各岗位分担","Each role"],["外包","Outsourced"],["还没定","TBD"],["其他","Other"]]},
+   {id:"concerns",q:"对上这套系统的主要顾虑（可多选）",en:"Main concerns",t:"checks",other:1,opts:[["成本","Cost"],["团队不会用","Adoption"],["数据安全","Security"],["迁移麻烦","Migration"],["经销商不配合","Dealer buy-in"],["其他","Other"]]},
+   {id:"contactBest",q:"后续最方便的沟通方式",en:"Best way to follow up",t:"radio",other:1,opts:[["邮件","Email"],["微信","WeChat"],["电话","Phone"],["视频会","Video call"],["其他","Other"]]},
+   {id:"finalNotes",q:"还有什么想让我们知道的？（自由填写）",en:"Anything else we should know?",t:"textarea"},
+ ]},
 ];
 
 /* ===================== 状态 & 渲染 ===================== */
-const KEY="foa_req_v2";
+const KEY="foa_req_v3";
 let state=JSON.parse(localStorage.getItem(KEY)||"{}");
 if(!state.date){const d=new Date();state.date=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 
